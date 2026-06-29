@@ -1,6 +1,6 @@
 {
   "name": "enterprise-knowledge-assistant",
-  "version": "5.0.0",
+  "version": "6.0.0",
   "description": "Production-grade Enterprise Knowledge Assistant with Multi-Format RAG, powered by Groq (llama-3.3-70b-versatile)",
   "main": "server.js",
   "scripts": {
