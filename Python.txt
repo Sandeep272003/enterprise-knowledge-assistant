@@ -1,0 +1,623 @@
+Python fundamentals are the core concepts you need to understand before building applications, analyzing data, or working with AI. Here's a structured overview.
+
+# 1. What is Python?
+
+Python is a high-level, interpreted programming language known for its simple and readable syntax. It is widely used for:
+
+* Web development
+* Data analysis
+* Artificial intelligence and machine learning
+* Automation
+* Scientific computing
+* Game development
+
+Example:
+
+```python
+print("Hello, World!")
+```
+
+Output:
+
+```
+Hello, World!
+```
+
+---
+
+# 2. Variables
+
+Variables store data.
+
+```python
+name = "Alice"
+age = 25
+height = 5.7
+is_student = True
+```
+
+Python automatically determines the variable type.
+
+Rules:
+
+* Variable names should start with a letter or underscore.
+* They cannot begin with a number.
+* They are case-sensitive.
+
+Example:
+
+```python
+score = 90
+Score = 100
+
+print(score)
+print(Score)
+```
+
+These are different variables.
+
+---
+
+# 3. Data Types
+
+### Integer (`int`)
+
+```python
+x = 10
+```
+
+### Float (`float`)
+
+```python
+pi = 3.14159
+```
+
+### String (`str`)
+
+```python
+name = "John"
+```
+
+### Boolean (`bool`)
+
+```python
+is_open = False
+```
+
+### List
+
+An ordered collection.
+
+```python
+fruits = ["Apple", "Banana", "Orange"]
+```
+
+### Tuple
+
+Immutable collection.
+
+```python
+point = (10, 20)
+```
+
+### Dictionary
+
+Stores key-value pairs.
+
+```python
+student = {
+    "name": "Alice",
+    "age": 21
+}
+```
+
+### Set
+
+Stores unique values.
+
+```python
+colors = {"Red", "Blue", "Green"}
+```
+
+---
+
+# 4. Input and Output
+
+Getting user input:
+
+```python
+name = input("Enter your name: ")
+print("Hello", name)
+```
+
+Input is always read as a string.
+
+Convert it if needed:
+
+```python
+age = int(input("Age: "))
+```
+
+---
+
+# 5. Operators
+
+## Arithmetic
+
+```python
+a = 10
+b = 3
+
+print(a + b)
+print(a - b)
+print(a * b)
+print(a / b)
+print(a // b)
+print(a % b)
+print(a ** b)
+```
+
+Output:
+
+```
+13
+7
+30
+3.3333
+3
+1
+1000
+```
+
+---
+
+## Comparison
+
+```python
+5 > 3
+5 < 3
+5 == 5
+5 != 3
+```
+
+Returns either `True` or `False`.
+
+---
+
+## Logical
+
+```python
+True and False
+True or False
+not True
+```
+
+---
+
+## Assignment
+
+```python
+x = 5
+x += 2
+x -= 1
+```
+
+---
+
+# 6. Conditional Statements
+
+## if
+
+```python
+age = 18
+
+if age >= 18:
+    print("Adult")
+```
+
+---
+
+## if-else
+
+```python
+age = 16
+
+if age >= 18:
+    print("Adult")
+else:
+    print("Minor")
+```
+
+---
+
+## if-elif-else
+
+```python
+marks = 85
+
+if marks >= 90:
+    print("A")
+elif marks >= 75:
+    print("B")
+else:
+    print("C")
+```
+
+---
+
+# 7. Loops
+
+## for loop
+
+```python
+for i in range(5):
+    print(i)
+```
+
+Output:
+
+```
+0
+1
+2
+3
+4
+```
+
+---
+
+Loop through a list
+
+```python
+fruits = ["Apple", "Banana", "Orange"]
+
+for fruit in fruits:
+    print(fruit)
+```
+
+---
+
+## while loop
+
+```python
+count = 1
+
+while count <= 5:
+    print(count)
+    count += 1
+```
+
+---
+
+# 8. Functions
+
+Functions organize reusable code.
+
+```python
+def greet(name):
+    print("Hello", name)
+
+greet("Alice")
+```
+
+Function with return value:
+
+```python
+def add(a, b):
+    return a + b
+
+result = add(5, 8)
+print(result)
+```
+
+---
+
+# 9. Strings
+
+```python
+text = "Python"
+```
+
+Access characters:
+
+```python
+print(text[0])
+```
+
+Output:
+
+```
+P
+```
+
+Length:
+
+```python
+len(text)
+```
+
+Convert case:
+
+```python
+text.upper()
+text.lower()
+```
+
+Slice:
+
+```python
+text[1:4]
+```
+
+Output:
+
+```
+yth
+```
+
+---
+
+# 10. Lists
+
+Create:
+
+```python
+numbers = [10, 20, 30]
+```
+
+Add item:
+
+```python
+numbers.append(40)
+```
+
+Remove:
+
+```python
+numbers.remove(20)
+```
+
+Access:
+
+```python
+print(numbers[0])
+```
+
+Loop:
+
+```python
+for num in numbers:
+    print(num)
+```
+
+---
+
+# 11. Dictionaries
+
+```python
+student = {
+    "name": "Alice",
+    "age": 22
+}
+```
+
+Access:
+
+```python
+print(student["name"])
+```
+
+Add:
+
+```python
+student["city"] = "London"
+```
+
+Loop:
+
+```python
+for key, value in student.items():
+    print(key, value)
+```
+
+---
+
+# 12. Exception Handling
+
+Prevent program crashes.
+
+```python
+try:
+    num = int(input("Enter number: "))
+    print(10 / num)
+
+except ZeroDivisionError:
+    print("Cannot divide by zero.")
+
+except ValueError:
+    print("Invalid input.")
+```
+
+---
+
+# 13. Modules
+
+Import built-in libraries.
+
+```python
+import math
+
+print(math.sqrt(25))
+```
+
+Another example:
+
+```python
+import random
+
+print(random.randint(1, 10))
+```
+
+---
+
+# 14. Classes and Objects (Basics)
+
+```python
+class Person:
+    def __init__(self, name):
+        self.name = name
+
+    def greet(self):
+        print("Hello", self.name)
+
+p = Person("Alice")
+p.greet()
+```
+
+---
+
+# 15. File Handling
+
+Write:
+
+```python
+with open("sample.txt", "w") as file:
+    file.write("Hello")
+```
+
+Read:
+
+```python
+with open("sample.txt", "r") as file:
+    print(file.read())
+```
+
+---
+
+# 16. Common Built-in Functions
+
+```python
+len([1,2,3])
+
+max([4,7,2])
+
+min([4,7,2])
+
+sum([1,2,3])
+
+type(10)
+
+sorted([3,1,2])
+```
+
+---
+
+# 17. List Comprehension
+
+Traditional:
+
+```python
+squares = []
+
+for i in range(5):
+    squares.append(i*i)
+```
+
+Pythonic way:
+
+```python
+squares = [i*i for i in range(5)]
+```
+
+Output:
+
+```
+[0, 1, 4, 9, 16]
+```
+
+---
+
+# 18. Python's Indentation
+
+Python uses indentation (spaces) to define blocks of code.
+
+Correct:
+
+```python
+if True:
+    print("Hello")
+```
+
+Incorrect:
+
+```python
+if True:
+print("Hello")
+```
+
+This raises an `IndentationError`.
+
+---
+
+# 19. Comments
+
+Single-line comment:
+
+```python
+# This is a comment
+```
+
+Multi-line string (often used as a docstring):
+
+```python
+"""
+This is a multi-line
+description.
+"""
+```
+
+---
+
+# 20. A Simple Program
+
+```python
+def calculate_average(numbers):
+    return sum(numbers) / len(numbers)
+
+marks = [80, 90, 70, 85]
+
+average = calculate_average(marks)
+
+if average >= 75:
+    print("Pass")
+else:
+    print("Fail")
+
+print("Average:", average)
+```
+
+Output:
+
+```
+Pass
+Average: 81.25
+```
+
+## Learning roadmap
+
+A good order for learning Python is:
+
+1. Variables and data types
+2. Operators and expressions
+3. Input and output
+4. Conditional statements (`if`, `elif`, `else`)
+5. Loops (`for`, `while`)
+6. Functions
+7. Strings, lists, tuples, dictionaries, and sets
+8. Modules and packages
+9. File handling
+10. Exception handling
+11. Object-oriented programming (classes and objects)
+12. Advanced topics such as decorators, generators, iterators, comprehensions, and asynchronous programming
+
+Once you're comfortable with these fundamentals, you'll have a solid foundation for moving into specialized areas like web development, data science, automation, or machine learning.

@@ -1,0 +1,9 @@
+node_modules/
+.env
+uploads/*
+!uploads/.gitkeep
+evaluation/results/*
+!evaluation/results/.gitkeep
+data/*
+!data/.gitkeep
+*.log

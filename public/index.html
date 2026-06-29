@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enterprise Knowledge Assistant v6</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<style>
+/* ═══════════════════════════════════════════════════════════
+   CSS VARIABLES — DARK & LIGHT THEMES
+   ═══════════════════════════════════════════════════════════ */
+:root {
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", "Helvetica Neue", Arial, sans-serif;
+  --mono: "SF Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+  --r: 14px; --rs: 10px; --rss: 6px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.08);
+  --shadow: 0 4px 20px rgba(0,0,0,.1);
+  --shadow-lg: 0 12px 48px rgba(0,0,0,.15);
+  --transition: .2s ease;
+}
+
+/* Dark theme (default) */
+[data-theme="dark"] {
+  --bg0: #0a0c10; --bg1: #10131a; --bg2: #171c26; --bg3: #1e2433;
+  --bgh: #283040; --t0: #f0f2f6; --t1: #c0c6d2; --t2: #8892a4; --t3: #505a6e;
+  --blue: #4f8ff7; --blueh: #3b7ce5; --blueb: rgba(79,143,247,.1); --blueg: rgba(79,143,247,.25);
+  --green: #2dd4a0; --greenb: rgba(45,212,160,.1); --greeng: rgba(45,212,160,.25);
+  --amber: #f5a623; --amberb: rgba(245,166,35,.1);
+  --red: #f04848; --redb: rgba(240,72,72,.1);
+  --purple: #a97cf8; --purpleb: rgba(169,124,248,.1); --purpleg: rgba(169,124,248,.25);
+  --cyan: #22d3ee; --cyanb: rgba(34,211,238,.1);
+  --bdr: #1a2030; --bdr2: #263040; --bdr3: #344060;
+  --input-bg: #141820; --hover-bg: rgba(255,255,255,.03);
+  --scrollbar: #263040; --scrollbar-hover: #344060;
+}
+
+/* Light theme */
+[data-theme="light"] {
+  --bg0: #f7f8fa; --bg1: #ffffff; --bg2: #f0f2f5; --bg3: #e5e8ee;
+  --bgh: #d8dce5; --t0: #1a1e2c; --t1: #3a4050; --t2: #6b7280; --t3: #9ca3af;
+  --blue: #2563eb; --blueh: #1d4ed8; --blueb: rgba(37,99,235,.06); --blueg: rgba(37,99,235,.15);
+  --green: #059669; --greenb: rgba(5,150,105,.06); --greeng: rgba(5,150,105,.15);
+  --amber: #d97706; --amberb: rgba(217,119,6,.06);
+  --red: #dc2626; --redb: rgba(220,38,38,.06);
+  --purple: #7c3aed; --purpleb: rgba(124,58,237,.06); --purpleg: rgba(124,58,237,.15);
+  --cyan: #0891b2; --cyanb: rgba(8,145,178,.06);
+  --bdr: #e2e5ea; --bdr2: #d1d5db; --bdr3: #b0b7c3;
+  --input-bg: #ffffff; --hover-bg: rgba(0,0,0,.02);
+  --scrollbar: #d1d5db; --scrollbar-hover: #b0b7c3;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   BASE RESET & LAYOUT
+   ═══════════════════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg0);color:var(--t0);height:100vh;display:flex;overflow:hidden;font-size:14px;transition:background .35s ease,color .35s ease}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--scrollbar);border-radius:4px}::-webkit-scrollbar-thumb:hover{background:var(--scrollbar-hover)}
+::selection{background:var(--blueb);color:var(--blue)}
+
+/* ═══════════════════════════════════════════════════════════
+   SIDEBAR
+   ═══════════════════════════════════════════════════════════ */
+.sidebar{width:290px;background:var(--bg1);border-right:1px solid var(--bdr);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden;transition:background var(--transition),border-color var(--transition)}
+.sidebar-head{padding:14px 16px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:10px;transition:border-color var(--transition)}
+.sidebar-head h1{font-size:14px;font-weight:800;display:flex;align-items:center;gap:8px;white-space:nowrap;letter-spacing:-.3px}
+.sidebar-head .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--greeng);flex-shrink:0;animation:pulse-dot 2s ease-in-out infinite}
+@keyframes pulse-dot{0%,100%{box-shadow:0 0 8px var(--greeng)}50%{box-shadow:0 0 16px var(--greeng),0 0 24px var(--greeng)}}
+.sidebar-head .ver{font-size:9px;color:var(--t3);background:var(--bg3);padding:2px 8px;border-radius:10px;margin-left:auto;font-weight:700;letter-spacing:.5px;transition:background var(--transition)}
+
+/* Theme Toggle */
+.theme-toggle{margin-left:6px;width:28px;height:28px;border-radius:8px;border:1px solid var(--bdr);background:var(--bg2);color:var(--amber);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .35s cubic-bezier(.4,0,.2,1);flex-shrink:0}
+.theme-toggle:hover{border-color:var(--amber);background:var(--amberb);transform:rotate(20deg) scale(1.1)}
+.theme-toggle:active{transform:rotate(180deg) scale(.95)}
+[data-theme="light"] .theme-toggle{color:var(--blue)}
+
+/* Upload Section */
+.upload-sec{padding:10px 12px}
+.upload-zone{border:1.5px dashed var(--bdr2);border-radius:var(--r);padding:16px 12px;text-align:center;cursor:pointer;transition:all .25s;background:var(--bg2);position:relative;overflow:hidden}
+.upload-zone::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,var(--blueb),var(--purpleb));opacity:0;transition:opacity .25s}
+.upload-zone:hover,.upload-zone.over{border-color:var(--blue);transform:translateY(-1px);box-shadow:0 6px 24px rgba(79,143,247,.1)}
+.upload-zone:hover::before,.upload-zone.over::before{opacity:1}
+.upload-zone>*{position:relative;z-index:1}
+.upload-zone .ic{font-size:24px;display:block;margin-bottom:4px;transition:transform .25s}
+.upload-zone:hover .ic{transform:translateY(-2px)}
+.upload-zone p{font-size:11px;color:var(--t2);margin-top:2px}
+.upload-zone .formats-hint{font-size:9px;color:var(--t3);margin-top:6px;cursor:help;border-bottom:1px dotted var(--t3);display:inline-block}
+.upload-zone input[type=file]{display:none}
+.upload-progress{margin-top:8px;display:none}
+.upload-progress .bar{height:3px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.upload-progress .bar .fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--purple),var(--cyan));border-radius:3px;transition:width .3s;width:0%;background-size:200% 100%;animation:gradient-move 2s linear infinite}
+@keyframes gradient-move{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+.upload-progress .label{font-size:10px;color:var(--t3);margin-top:4px;font-weight:500}
+
+/* Documents List */
+.doc-sec{flex:1;overflow-y:auto;padding:6px 8px}
+.doc-sec-head{display:flex;justify-content:space-between;align-items:center;padding:6px 8px;margin-bottom:2px}
+.doc-sec-head span{font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.8px}
+.doc-sec-head button{background:none;border:none;color:var(--t3);cursor:pointer;font-size:10px;padding:3px 8px;border-radius:var(--rss);transition:all .15s;font-weight:600}
+.doc-sec-head button:hover{color:var(--red);background:var(--redb)}
+
+.doc-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--rs);margin-bottom:1px;transition:all .15s;position:relative;cursor:default}
+.doc-item:hover{background:var(--hover-bg)}
+.doc-item .fmt{font-size:8px;font-weight:800;padding:2px 6px;border-radius:3px;text-transform:uppercase;flex-shrink:0;letter-spacing:.5px}
+.fmt-pdf{background:var(--redb);color:var(--red)}
+.fmt-docx{background:var(--blueb);color:var(--blue)}
+.fmt-xlsx{background:var(--greenb);color:var(--green)}
+.fmt-csv{background:var(--amberb);color:var(--amber)}
+.fmt-json{background:var(--purpleb);color:var(--purple)}
+.fmt-html{background:var(--cyanb);color:var(--cyan)}
+.fmt-pptx{background:rgba(249,115,22,.1);color:#f97316}
+.fmt-default{background:var(--bg3);color:var(--t2)}
+.doc-item .info{flex:1;min-width:0}
+.doc-item .fname{font-size:12px;color:var(--t0);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;font-weight:500}
+.doc-item .meta{font-size:10px;color:var(--t3);margin-top:1px}
+.doc-item .del{background:none;border:none;color:var(--t3);cursor:pointer;font-size:16px;padding:2px 4px;opacity:0;transition:all .15s;border-radius:var(--rss);line-height:1}
+.doc-item:hover .del{opacity:.5}
+.doc-item .del:hover{opacity:1;color:var(--red);background:var(--redb);transform:scale(1.1)}
+.doc-empty{padding:24px 16px;text-align:center;color:var(--t3);font-size:12px}
+
+.sidebar-actions{padding:10px 12px;border-top:1px solid var(--bdr);display:flex;gap:4px;flex-wrap:wrap;transition:border-color var(--transition)}
+.sidebar-actions button{background:var(--bg2);border:1px solid var(--bdr);color:var(--t2);font-size:10px;padding:5px 10px;border-radius:var(--rs);cursor:pointer;transition:all .15s;font-weight:500}
+.sidebar-actions button:hover{background:var(--bg3);color:var(--t0);border-color:var(--bdr2);transform:translateY(-1px)}
+
+/* ═══════════════════════════════════════════════════════════
+   MAIN CONTENT AREA
+   ═══════════════════════════════════════════════════════════ */
+.main{flex:1;display:flex;flex-direction:row;min-width:0;position:relative;background:var(--bg0);transition:background var(--transition)}
+.main-col{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden}
+
+/* Header Bar */
+.main-head{padding:10px 20px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:10px;background:var(--bg1);transition:all var(--transition);backdrop-filter:blur(12px);flex-shrink:0}
+.main-head .title{font-size:14px;font-weight:700;flex:1;letter-spacing:-.2px;display:flex;align-items:center;gap:8px}
+.main-head .title .model-tag{font-size:9px;font-weight:600;color:var(--t3);background:var(--bg3);padding:2px 8px;border-radius:10px}
+.main-head button{background:var(--bg2);border:1px solid var(--bdr);color:var(--t2);padding:5px 12px;border-radius:var(--rs);cursor:pointer;font-size:11px;display:flex;align-items:center;gap:5px;transition:all .15s;font-weight:500}
+.main-head button:hover{background:var(--bg3);color:var(--t0);border-color:var(--bdr2);transform:translateY(-1px)}
+.main-head button.active{border-color:var(--blue);color:var(--blue);background:var(--blueb)}
+
+/* Chat Area */
+.chat-area{flex:1;overflow-y:auto;padding:24px 20px;min-height:0;overflow-behavior:smooth}
+.chat-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--t3);text-align:center;padding:40px}
+.chat-empty .logo{font-size:56px;margin-bottom:16px;opacity:.15;filter:grayscale(.5)}
+.chat-empty h2{font-size:22px;color:var(--t1);margin-bottom:10px;font-weight:700;letter-spacing:-.4px}
+.chat-empty p{font-size:13px;max-width:480px;line-height:1.7}
+.chat-empty .hint-tags{display:flex;gap:8px;margin-top:20px;flex-wrap:wrap;justify-content:center}
+.chat-empty .hint-tag{font-size:11px;padding:5px 14px;border-radius:16px;background:var(--bg2);color:var(--t2);border:1px solid var(--bdr);transition:all .15s;cursor:default}
+.chat-empty .hint-tag:hover{border-color:var(--bdr2);transform:translateY(-1px)}
+
+/* Messages */
+.msg{margin-bottom:24px;animation:msgIn .3s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg-user{display:flex;justify-content:flex-end}
+.msg-user .bubble{background:linear-gradient(135deg,rgba(79,143,247,.12),rgba(79,143,247,.05));border:1px solid rgba(79,143,247,.18);border-radius:16px 16px 4px 16px;padding:10px 16px;max-width:640px;color:var(--t0);font-size:14px;line-height:1.6}
+.msg-assis .bubble{background:var(--bg2);border:1px solid var(--bdr);border-radius:16px 16px 16px 4px;padding:16px 20px;max-width:840px;box-shadow:var(--shadow);transition:background var(--transition),border-color var(--transition)}
+.msg-head{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.msg-head .mode-badge{font-size:9px;font-weight:700;padding:2px 10px;border-radius:10px;text-transform:uppercase;letter-spacing:.6px}
+.mode-simple{background:var(--greenb);color:var(--green)}
+.mode-hard{background:var(--blueb);color:var(--blue)}
+.mode-deep{background:var(--purpleb);color:var(--purple)}
+.msg-head .conf{margin-left:auto;font-size:10px;color:var(--t3);display:flex;align-items:center;gap:6px;font-weight:500}
+.conf-bar{width:50px;height:3px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.conf-bar .fill{height:100%;border-radius:3px;transition:width .4s}
+
+/* Message Body / Markdown */
+.msg-body{font-size:14px;line-height:1.8;color:var(--t1)}
+.msg-body strong{color:var(--t0);font-weight:600}
+.msg-body h2{font-size:16px;font-weight:700;color:var(--t0);margin:18px 0 8px;padding-bottom:6px;border-bottom:1px solid var(--bdr)}
+.msg-body h3{font-size:14px;font-weight:600;color:var(--t0);margin:14px 0 6px}
+.msg-body ul,.msg-body ol{padding-left:20px;margin:6px 0}
+.msg-body li{margin-bottom:3px}
+.msg-body code{background:var(--bg3);padding:1px 6px;border-radius:4px;font-size:13px;color:var(--cyan);font-family:var(--mono)}
+.msg-body pre{background:var(--bg0);border:1px solid var(--bdr);border-radius:var(--rs);padding:14px;margin:10px 0;overflow-x:auto;font-size:13px}
+.msg-body pre code{background:none;padding:0;font-size:12px}
+.source-ref-tag{font-size:10px;color:var(--blue);background:var(--blueb);padding:1px 6px;border-radius:4px;font-weight:600}
+
+/* Collapsible Sections */
+.msg-sec{margin-top:14px;padding-top:12px;border-top:1px solid var(--bdr)}
+.msg-sec-title{font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;gap:6px;user-select:none;transition:color .15s}
+.msg-sec-title:hover{color:var(--t2)}
+.msg-sec-title .arrow{transition:transform .2s;font-size:9px}
+.msg-sec-title.collapsed .arrow{transform:rotate(-90deg)}
+.msg-sec-body{font-size:12px}.msg-sec-body.collapsed{display:none}
+
+/* Sources */
+.source-item{padding:8px 10px;background:var(--bg0);border-radius:var(--rs);margin-bottom:4px;border:1px solid var(--bdr);transition:all .15s}
+.source-item:hover{border-color:var(--bdr2)}
+.source-item .src-head{display:flex;align-items:center;gap:8px;margin-bottom:3px}
+.source-item .src-name{font-size:11px;color:var(--blue);font-weight:600}
+.source-item .src-page{font-size:10px;color:var(--t3)}
+.source-item .src-score{margin-left:auto;font-size:10px;color:var(--amber);font-weight:700}
+.source-item .src-snippet{font-size:11px;color:var(--t2);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+/* Verification */
+.verify-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:3px 10px;border-radius:10px;font-weight:600}
+.verify-true{background:var(--greenb);color:var(--green)}
+.verify-false{background:var(--redb);color:var(--red)}
+.verify-null{background:var(--amberb);color:var(--amber)}
+.verify-issues{margin-top:6px;font-size:11px;color:var(--t2)}.verify-issues li{margin-bottom:2px}
+
+/* Insights */
+.insight-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.insight-card{background:var(--bg0);border:1px solid var(--bdr);border-radius:var(--rs);padding:8px 10px;transition:background var(--transition),border-color var(--transition)}
+.insight-card .ic-title{font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.insight-card .ic-items{font-size:11px;color:var(--t2);line-height:1.5}
+.insight-card .ic-items span{display:inline-block;background:var(--bg3);padding:1px 6px;border-radius:3px;margin:1px 2px;font-size:10px}
+
+/* Related Questions */
+.related-chips{display:flex;flex-wrap:wrap;gap:6px}
+.related-chip{background:var(--bg0);border:1px solid var(--bdr);border-radius:16px;padding:5px 14px;font-size:11px;color:var(--blue);cursor:pointer;transition:all .15s;max-width:320px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
+.related-chip:hover{border-color:var(--blue);background:var(--blueb);transform:translateY(-1px);box-shadow:0 2px 8px rgba(79,143,247,.1)}
+
+/* Pipeline Pills */
+.pipeline-pills{display:flex;flex-wrap:wrap;gap:3px;margin-top:6px}
+.pipeline-pill{font-size:9px;padding:2px 8px;border-radius:10px;background:var(--bg0);color:var(--t3);border:1px solid var(--bdr);font-weight:500;transition:background var(--transition),border-color var(--transition)}
+
+/* Feedback */
+.feedback-row{margin-top:14px;display:flex;align-items:center;gap:10px;padding-top:12px;border-top:1px solid var(--bdr)}
+.feedback-row>span{font-size:11px;color:var(--t3);font-weight:500}
+.stars{display:flex;gap:1px}
+.star-btn{background:none;border:none;font-size:18px;cursor:pointer;color:var(--bdr2);transition:all .15s;padding:0 2px}
+.star-btn:hover,.star-btn.active{color:var(--amber);transform:scale(1.2)}
+
+/* ═══════════════════════════════════════════════════════════
+   INPUT SECTION — ChatGPT-Style
+   ═══════════════════════════════════════════════════════════ */
+.input-sec{padding:12px 20px 16px;border-top:1px solid var(--bdr);background:var(--bg1);transition:background .35s ease,border-color .35s ease;flex-shrink:0}
+.input-container{background:var(--input-bg);border:1.5px solid var(--bdr);border-radius:var(--r);overflow:visible;transition:all .3s cubic-bezier(.4,0,.2,1);box-shadow:var(--shadow);position:relative}
+.input-container:focus-within{border-color:var(--blue);box-shadow:0 0 0 3px var(--blueb),0 4px 24px rgba(79,143,247,.12),var(--shadow-lg)}
+
+/* Mode Tabs inside input */
+.mode-tabs{display:flex;gap:1px;padding:5px 6px 0;position:relative}
+.mode-tabs::after{content:"";position:absolute;bottom:0;left:6px;right:6px;height:1px;background:var(--bdr)}
+.mode-tab{background:none;border:none;color:var(--t3);padding:5px 18px 7px;cursor:pointer;font-size:11.5px;font-weight:600;transition:all .2s;display:flex;align-items:center;gap:6px;border-radius:6px 6px 0 0;position:relative;letter-spacing:-.1px}
+.mode-tab:hover{color:var(--t1);background:var(--hover-bg)}
+.mode-tab .mode-icon{font-size:13px}
+.mode-tab .mode-words{display:none}
+.mode-tab.active-simple{color:var(--green);background:var(--greenb)}
+.mode-tab.active-simple::after{content:"";position:absolute;bottom:-1px;left:6px;right:6px;height:2px;background:var(--green);border-radius:2px 2px 0 0}
+.mode-tab.active-hard{color:var(--blue);background:var(--blueb)}
+.mode-tab.active-hard::after{content:"";position:absolute;bottom:-1px;left:6px;right:6px;height:2px;background:var(--blue);border-radius:2px 2px 0 0}
+.mode-tab.active-deep{color:var(--purple);background:var(--purpleb)}
+.mode-tab.active-deep::after{content:"";position:absolute;bottom:-1px;left:6px;right:6px;height:2px;background:var(--purple);border-radius:2px 2px 0 0}
+
+/* Input Row */
+.input-row{position:relative;display:flex;align-items:flex-end}
+.input-row textarea{width:100%;background:transparent;border:none;padding:10px 90px 10px 14px;color:var(--t0);font-size:14px;resize:none;min-height:46px;max-height:160px;line-height:1.5;outline:none;font-family:var(--font);transition:color var(--transition)}
+.input-row textarea::placeholder{color:var(--t3)}
+.input-row .send-btn{position:absolute;right:8px;bottom:8px;width:36px;height:36px;border-radius:var(--rs);background:var(--blue);border:none;color:#fff;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .2s;font-weight:700}
+.input-row .send-btn:hover{background:var(--blueh);transform:scale(1.08);box-shadow:0 2px 12px var(--blueg)}
+.input-row .send-btn:disabled{background:var(--bdr2);color:var(--t3);cursor:not-allowed;transform:none;box-shadow:none}
+.input-row .at-btn{position:absolute;right:50px;bottom:8px;width:36px;height:36px;border-radius:var(--rs);background:var(--bg3);border:1px solid var(--bdr);color:var(--t2);cursor:pointer;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.input-row .at-btn:hover{color:var(--blue);border-color:var(--blue);background:var(--blueb);transform:scale(1.05)}
+
+/* @ File Picker Dropdown */
+.at-dropdown{position:absolute;bottom:100%;left:0;right:0;background:var(--bg2);border:1px solid var(--bdr2);border-radius:var(--r);margin-bottom:8px;max-height:320px;display:none;z-index:100;box-shadow:var(--shadow-lg),0 0 0 1px rgba(79,143,247,.08);transition:background var(--transition),border-color var(--transition)}
+.at-dropdown.show{display:block;animation:dropIn .15s ease}
+@keyframes dropIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.at-search{padding:8px;border-bottom:1px solid var(--bdr);position:sticky;top:0;background:var(--bg2);z-index:1;display:flex;align-items:center;gap:8px}
+.at-search input{flex:1;background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--rss);padding:6px 10px;color:var(--t0);font-size:12px;outline:none;font-family:var(--font);transition:border-color .15s}
+.at-search input:focus{border-color:var(--blue);box-shadow:0 0 0 2px var(--blueb)}
+.at-search input::placeholder{color:var(--t3)}
+.at-list{overflow-y:auto;max-height:240px}
+.at-dropdown .at-item{padding:9px 14px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background .1s;border-left:3px solid transparent}
+.at-dropdown .at-item:hover{background:var(--hover-bg);border-left-color:var(--blue)}
+.at-dropdown .at-item .at-fmt{font-size:8px;font-weight:800;padding:2px 5px;border-radius:3px;text-transform:uppercase;flex-shrink:0}
+.at-dropdown .at-item .at-fname{font-size:12px;color:var(--t0);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.at-dropdown .at-item .at-meta{font-size:10px;color:var(--t3)}
+.at-dropdown .at-empty{padding:20px;text-align:center;font-size:12px;color:var(--t3)}
+.at-count{font-size:10px;color:var(--t3);white-space:nowrap;font-weight:600;flex-shrink:0}
+
+/* Input Options Row */
+.input-opts{display:flex;gap:6px;margin-top:8px;align-items:center;flex-wrap:wrap;padding:0 4px}
+.input-opts select,.input-opts label{font-size:10px;color:var(--t2);background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--rss);padding:4px 8px;cursor:pointer;outline:none;transition:all .15s;font-weight:500}
+.input-opts select{color:var(--t1)}
+.input-opts select:hover,.input-opts label:hover{border-color:var(--bdr2);transform:translateY(-1px)}
+.input-opts label{display:flex;align-items:center;gap:4px;cursor:pointer;user-select:none}
+.input-opts label input{accent-color:var(--blue);width:11px;height:11px}
+.input-opts label:has(input:checked){border-color:var(--blue);color:var(--blue);background:var(--blueb)}
+
+/* ═══════════════════════════════════════════════════════════
+   RIGHT PANEL — Inspector
+   ═══════════════════════════════════════════════════════════ */
+.right-panel{width:0;overflow:hidden;background:var(--bg1);border-left:1px solid var(--bdr);transition:width .3s ease,background var(--transition),border-color var(--transition);flex-shrink:0;display:flex;flex-direction:column}
+.right-panel.open{width:330px}
+.rp-head{padding:12px 16px;border-bottom:1px solid var(--bdr);display:flex;justify-content:space-between;align-items:center}
+.rp-head h3{font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.6px}
+.rp-head button{background:none;border:none;color:var(--t3);cursor:pointer;font-size:16px;transition:color .15s}
+.rp-head button:hover{color:var(--t0)}
+.rp-body{flex:1;overflow-y:auto;padding:14px}
+.rp-section{margin-bottom:16px}
+.rp-section h4{font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--bdr)}
+.rp-row{display:flex;justify-content:space-between;padding:3px 0;font-size:12px}
+.rp-row .lbl{color:var(--t3)}.rp-row .val{color:var(--t1);font-weight:500;text-align:right;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rp-toggle{position:absolute;right:0;top:50%;transform:translateY(-50%);width:20px;height:48px;background:var(--bg1);border:1px solid var(--bdr);border-right:none;border-radius:6px 0 0 6px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--t3);font-size:11px;z-index:5;transition:all .2s}
+.rp-toggle:hover{color:var(--t0);background:var(--bg2)}
+
+/* ═══════════════════════════════════════════════════════════
+   MODALS
+   ═══════════════════════════════════════════════════════════ */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
+.modal-overlay.show{display:flex;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{background:var(--bg1);border:1px solid var(--bdr2);border-radius:16px;width:600px;max-width:92vw;max-height:80vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow-lg);transition:background var(--transition),border-color var(--transition)}
+.modal-head{padding:16px 20px;border-bottom:1px solid var(--bdr);display:flex;justify-content:space-between;align-items:center}
+.modal-head h2{font-size:15px;font-weight:700;letter-spacing:-.2px}
+.modal-head button{background:none;border:none;color:var(--t3);cursor:pointer;font-size:18px;transition:color .15s;padding:4px}
+.modal-head button:hover{color:var(--t0)}
+.modal-body{padding:20px;overflow-y:auto}
+
+/* Stats Grid */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.stat-card{background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--r);padding:14px 16px;transition:all .15s}
+.stat-card:hover{border-color:var(--bdr2);transform:translateY(-1px)}
+.stat-card .sc-val{font-size:24px;font-weight:800;color:var(--t0);letter-spacing:-.5px}
+.stat-card .sc-lbl{font-size:10px;color:var(--t3);margin-top:2px;font-weight:500;text-transform:uppercase;letter-spacing:.3px}
+
+/* Format Grid */
+.format-grid{display:flex;flex-wrap:wrap;gap:4px}
+.format-tag{font-size:10px;padding:3px 8px;border-radius:4px;background:var(--bg3);color:var(--t2);border:1px solid var(--bdr);font-weight:500;transition:all .15s}
+.format-tag:hover{border-color:var(--bdr2)}
+
+/* Typing Indicator */
+.typing{display:inline-flex;gap:5px;padding:6px 0}
+.typing span{width:7px;height:7px;border-radius:50%;background:var(--t3);animation:blink 1.4s infinite}
+.typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.2;transform:scale(.9)}40%{opacity:1;transform:scale(1)}}
+
+/* Error */
+.error-msg{background:var(--redb);border:1px solid rgba(240,72,72,.15);border-radius:var(--rs);padding:12px 16px;color:var(--red);font-size:13px}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════ */
+@media(max-width:900px){.sidebar{width:250px}.right-panel.open{width:280px}}
+@media(max-width:700px){.sidebar{display:none}.right-panel.open{width:260px}}
+</style>
+</head>
+<body>
+
+<!-- ═════════════════════════ SIDEBAR ═════════════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-head">
+    <h1><span class="dot"></span>Knowledge AI</h1>
+    <span class="ver">v6.0</span>
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle light/dark mode">
+      <span id="themeIcon">&#9788;</span>
+    </button>
+  </div>
+
+  <div class="upload-sec">
+    <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+      <span class="ic">+</span>
+      <strong style="font-size:12px;color:var(--t1)">Upload Documents</strong>
+      <p>Drag & drop or click to browse</p>
+      <span class="formats-hint" id="formatsHint">20+ formats supported</span>
+      <input type="file" id="fileInput" multiple accept=".pdf,.txt,.md,.docx,.xlsx,.pptx,.csv,.tsv,.json,.html,.htm,.xml,.yaml,.yml,.toml,.ini,.cfg,.conf,.log,.rtf">
+      <div class="upload-progress" id="uploadProgress">
+        <div class="bar"><div class="fill" id="uploadFill"></div></div>
+        <div class="label" id="uploadLabel">Processing...</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="doc-sec" id="docList">
+    <div class="doc-sec-head">
+      <span>Indexed Documents (<span id="docCount">0</span>)</span>
+      <button onclick="clearAllDocs()" title="Clear all documents">Clear All</button>
+    </div>
+    <div id="docItems"><div class="doc-empty">No documents uploaded yet</div></div>
+  </div>
+
+  <div class="sidebar-actions">
+    <button onclick="clearChat()">Clear Chat</button>
+    <button onclick="exportChat()">Export MD</button>
+    <button onclick="newSession()">New Session</button>
+  </div>
+</aside>
+
+<!-- ═════════════════════════ MAIN AREA ═════════════════════════ -->
+<div class="main">
+  <div class="main-col">
+    <div class="main-head">
+      <span class="title">Enterprise Knowledge Assistant <span class="model-tag">llama-3.3-70b</span></span>
+      <button id="btnAnalytics" onclick="showAnalytics()">Analytics</button>
+      <button id="btnFormats" onclick="showFormats()">Formats</button>
+      <button id="btnPanel" onclick="togglePanel()">Inspector</button>
+    </div>
+
+    <div class="chat-area" id="chatArea">
+      <div class="chat-empty" id="chatEmpty">
+        <div class="logo">&#9672;</div>
+        <h2>Enterprise Knowledge Assistant</h2>
+        <p>Upload documents in <strong style="color:var(--t1)">20+ formats</strong>, then ask questions. Use <strong style="color:var(--blue)">@filename</strong> to target a specific document. Choose your processing depth below.</p>
+        <div class="hint-tags">
+          <span class="hint-tag">&#9889; Simple — Fast &amp; Concise</span>
+          <span class="hint-tag">&#128300; Hard — Thorough Analysis</span>
+          <span class="hint-tag">&#129504; Deep — Exhaustive Deep-Dive</span>
+        </div>
+      </div>
+      <div id="chatMessages"></div>
+    </div>
+
+    <!-- ═══════════════════ INPUT BOX — PINNED TO BOTTOM ═══════════════════ -->
+    <div class="input-sec">
+      <div class="input-container">
+        <div class="mode-tabs">
+          <button class="mode-tab" data-mode="simple" onclick="setMode('simple')" title="Fast, concise answers"><span class="mode-icon">&#9889;</span> Simple</button>
+          <button class="mode-tab active-hard" data-mode="hard" onclick="setMode('hard')" title="Thorough in-depth analysis"><span class="mode-icon">&#128300;</span> Hard</button>
+          <button class="mode-tab" data-mode="deep" onclick="setMode('deep')" title="Exhaustive multi-perspective deep-dive"><span class="mode-icon">&#129504;</span> Deep</button>
+        </div>
+        <div class="input-row">
+          <div class="at-dropdown" id="atDropdown">
+            <div class="at-search"><input type="text" id="atSearch" placeholder="Search documents..." oninput="filterAtFiles(this.value)"><span class="at-count" id="atCount"></span></div>
+            <div class="at-list" id="atList"></div>
+          </div>
+          <textarea id="questionInput" placeholder="Ask anything about your documents... Type @ to reference a file" rows="1"></textarea>
+          <button class="at-btn" onclick="toggleAtPicker()" title="Reference document (@)">@</button>
+          <button class="send-btn" id="sendBtn" onclick="askQuestion()" disabled>&#9654;</button>
+        </div>
+      </div>
+      <div class="input-opts" id="inputOpts">
+        <select id="searchMode" title="Search mode"><option value="semantic">Semantic</option><option value="hybrid" selected>Hybrid (Best)</option><option value="keyword">Keyword (BM25)</option></select>
+        <label><input type="checkbox" id="optRewrite"> Rewrite</label>
+        <label><input type="checkbox" id="optRerank"> Re-rank</label>
+        <label><input type="checkbox" id="optVerify"> Verify</label>
+        <label><input type="checkbox" id="optClassify" checked> Classify</label>
+        <label><input type="checkbox" id="optDecompose"> Decompose</label>
+        <label><input type="checkbox" id="optRelated" checked> Related</label>
+        <label><input type="checkbox" id="optSummarize"> Summarize</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ RIGHT PANEL ═══════════════════ -->
+  <div style="position:relative">
+    <button class="rp-toggle" id="rpToggle" onclick="togglePanel()">&#9664;</button>
+    <div class="right-panel" id="rightPanel">
+      <div class="rp-head"><h3>Answer Inspector</h3><button onclick="togglePanel()">&#10005;</button></div>
+      <div class="rp-body" id="rpBody"><p style="color:var(--t3);font-size:12px;text-align:center;padding:40px 0">Ask a question to see detailed retrieval analysis here.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ MODALS ═══════════════════ -->
+<div class="modal-overlay" id="analyticsModal"><div class="modal"><div class="modal-head"><h2>Analytics Dashboard</h2><button onclick="closeModal('analyticsModal')">&#10005;</button></div><div class="modal-body" id="analyticsBody"></div></div></div>
+<div class="modal-overlay" id="formatsModal"><div class="modal"><div class="modal-head"><h2>Supported Formats</h2><button onclick="closeModal('formatsModal')">&#10005;</button></div><div class="modal-body" id="formatsBody"></div></div></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   STATE
+   ═══════════════════════════════════════════════════════════ */
+var state = {
+  sessionId: sessionStorage.getItem("eka_sid") || (function() {
+    var s = "sess_" + Math.random().toString(36).slice(2, 10);
+    sessionStorage.setItem("eka_sid", s);
+    return s;
+  })(),
+  processingMode: "hard",
+  isStreaming: false,
+  documents: [],
+  sourceStats: [],
+  sourceFilter: null,
+  lastResponse: null,
+  theme: localStorage.getItem("eka_theme") || "dark"
+};
+
+/* ═══════════════════════════════════════════════════════════
+   INITIALIZATION
+   ═══════════════════════════════════════════════════════════ */
+(function init() {
+  applyTheme(state.theme);
+  setupUpload();
+  setupTextarea();
+  loadDocuments();
+  setTimeout(function() { loadDocuments(); }, 1500);
+  fetch("/health").then(function(r) { return r.json(); }).then(function(h) {
+    state.documents = (h.sourceStats || []).map(function(s) { return s.filename; });
+    state.sourceStats = h.sourceStats || [];
+    renderDocList(h);
+  }).catch(function() {});
+})();
+
+/* ═══════════════════════════════════════════════════════════
+   THEME TOGGLE
+   ═══════════════════════════════════════════════════════════ */
+function toggleTheme() {
+  state.theme = state.theme === "dark" ? "light" : "dark";
+  applyTheme(state.theme);
+}
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute("data-theme", theme);
+  localStorage.setItem("eka_theme", theme);
+  var icon = document.getElementById("themeIcon");
+  if (icon) icon.innerHTML = theme === "dark" ? "&#9788;" : "&#9790;";
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FILE UPLOAD
+   ═══════════════════════════════════════════════════════════ */
+function setupUpload() {
+  var zone = document.getElementById("uploadZone");
+  var input = document.getElementById("fileInput");
+  zone.addEventListener("dragover", function(e) { e.preventDefault(); zone.classList.add("over"); });
+  zone.addEventListener("dragleave", function() { zone.classList.remove("over"); });
+  zone.addEventListener("drop", function(e) { e.preventDefault(); zone.classList.remove("over"); if (e.dataTransfer.files.length) uploadFiles(e.dataTransfer.files); });
+  input.addEventListener("change", function() { if (input.files.length) { uploadFiles(input.files); input.value = ""; } });
+}
+
+function uploadFiles(files) {
+  var prog = document.getElementById("uploadProgress");
+  var fill = document.getElementById("uploadFill");
+  var label = document.getElementById("uploadLabel");
+  prog.style.display = "block"; fill.style.width = "10%";
+  label.textContent = "Uploading " + files.length + " file(s)...";
+
+  var fd = new FormData();
+  for (var i = 0; i < files.length; i++) fd.append("files", files[i]);
+
+  fetch("/api/upload/batch", { method: "POST", body: fd })
+    .then(function(r) { if (!r.ok) return r.text().then(function(t) { throw new Error(t); }); return r.json(); })
+    .then(function(data) {
+      fill.style.width = "100%";
+      var successCount = data.results.filter(function(r) { return r.success; }).length;
+      label.textContent = successCount + "/" + data.results.length + " file(s) processed!";
+      setTimeout(function() { prog.style.display = "none"; fill.style.width = "0%"; }, 2500);
+      loadDocuments();
+    })
+    .catch(function(err) {
+      label.textContent = "Error: " + (err.message || "Upload failed");
+      fill.style.width = "100%"; fill.style.background = "var(--red)";
+      setTimeout(function() { prog.style.display = "none"; fill.style.width = "0%"; fill.style.background = ""; }, 3500);
+    });
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DOCUMENT LIST
+   ═══════════════════════════════════════════════════════════ */
+function loadDocuments() {
+  var itemsEl = document.getElementById("docItems");
+  var countEl = document.getElementById("docCount");
+  fetch("/api/documents").then(function(r) { return r.json(); }).then(function(data) {
+    state.documents = data.sources ? data.sources.map(function(s) { return s.filename; }) : [];
+    state.sourceStats = data.sources || [];
+    countEl.textContent = data.uniqueSources || 0;
+    if (!data.sources || data.sources.length === 0) {
+      itemsEl.innerHTML = '<div class="doc-empty">No documents uploaded yet</div>';
+      return;
+    }
+    var html = "";
+    data.sources.forEach(function(s) { html += buildDocItemHtml(s.filename, s.chunks, s.pages); });
+    itemsEl.innerHTML = html;
+  }).catch(function(err) {
+    itemsEl.innerHTML = '<div class="doc-empty" style="color:var(--red)">Failed to load documents</div>';
+    console.error("Load docs error:", err);
+  });
+}
+
+function renderDocList(healthData) {
+  var itemsEl = document.getElementById("docItems");
+  var countEl = document.getElementById("docCount");
+  var sources = healthData.sourceStats || healthData.sources || [];
+  countEl.textContent = sources.length;
+  if (sources.length === 0) { itemsEl.innerHTML = '<div class="doc-empty">No documents uploaded yet</div>'; return; }
+  var html = "";
+  sources.forEach(function(s) {
+    var fname = s.filename || s;
+    html += buildDocItemHtml(fname, s.chunks || 0, s.pages || 0);
+  });
+  itemsEl.innerHTML = html;
+}
+
+function buildDocItemHtml(fname, chunks, pages) {
+  var ext = fname.split(".").pop().toLowerCase();
+  var fmtClass = { pdf: "fmt-pdf", docx: "fmt-docx", xlsx: "fmt-xlsx", xls: "fmt-xlsx", csv: "fmt-csv", tsv: "fmt-csv", json: "fmt-json", html: "fmt-html", htm: "fmt-html", pptx: "fmt-pptx" }[ext] || "fmt-default";
+  return '<div class="doc-item" data-filename="' + escAttr(fname) + '">' +
+    '<span class="fmt ' + fmtClass + '">' + ext + '</span>' +
+    '<div class="info"><span class="fname">' + escHtml(fname) + '</span>' +
+    '<div class="meta">' + chunks + ' chunks' + (pages > 0 ? " &middot; " + pages + " sections" : "") + '</div></div>' +
+    '<button class="del" onclick="deleteFile(\'' + escAttr(fname) + '\')" title="Delete this document">&times;</button></div>';
+}
+
+function deleteFile(filename) {
+  if (!confirm("Delete \"" + filename + "\" and remove all its chunks?")) return;
+  fetch("/api/documents/" + encodeURIComponent(filename), { method: "DELETE" })
+    .then(function(r) { return r.json(); })
+    .then(function(d) { if (d.success) loadDocuments(); })
+    .catch(function(e) { console.error("Delete failed:", e); });
+}
+
+function clearAllDocs() {
+  if (!confirm("Delete ALL documents and clear conversation history?")) return;
+  fetch("/api/documents", { method: "DELETE" })
+    .then(function(r) { return r.json(); })
+    .then(function() { loadDocuments(); state.documents = []; state.sourceStats = []; });
+}
+
+/* ═══════════════════════════════════════════════════════════
+   @ FILE PICKER (with search)
+   ═══════════════════════════════════════════════════════════ */
+function toggleAtPicker() {
+  var dd = document.getElementById("atDropdown");
+  if (dd.classList.contains("show")) { dd.classList.remove("show"); return; }
+  // Always refresh document list from server before opening picker
+  fetch("/api/documents").then(function(r) { return r.json(); }).then(function(data) {
+    state.documents = data.sources ? data.sources.map(function(s) { return s.filename; }) : [];
+    state.sourceStats = data.sources || [];
+    renderAtList(state.documents);
+    dd.classList.add("show");
+    var searchInput = document.getElementById("atSearch");
+    searchInput.value = "";
+    setTimeout(function() { searchInput.focus(); }, 50);
+  }).catch(function() {
+    renderAtList(state.documents);
+    dd.classList.add("show");
+  });
+}
+
+function renderAtList(files) {
+  var listEl = document.getElementById("atList");
+  if (!files || files.length === 0) {
+    listEl.innerHTML = '<div class="at-empty">No documents uploaded yet</div>';
+    return;
+  }
+  // Build lookup for chunk/pages info
+  var statsMap = {};
+  state.sourceStats.forEach(function(s) { statsMap[s.filename] = s; });
+  var html = "";
+  files.forEach(function(f) {
+    var ext = f.split(".").pop().toLowerCase();
+    var fmtClass = { pdf: "fmt-pdf", docx: "fmt-docx", xlsx: "fmt-xlsx", xls: "fmt-xlsx", csv: "fmt-csv", tsv: "fmt-csv", json: "fmt-json", html: "fmt-html", htm: "fmt-html", pptx: "fmt-pptx" }[ext] || "fmt-default";
+    var meta = statsMap[f];
+    var metaText = meta ? (meta.chunks + " chunks") : "";
+    html += '<div class="at-item" onclick="selectAtFile(\'' + escAttr(f) + '\')">' +
+      '<span class="at-fmt ' + fmtClass + '">' + ext + '</span>' +
+      '<span class="at-fname">' + escHtml(f) + '</span>' +
+      (metaText ? '<span class="at-meta">' + metaText + '</span>' : '') + '</div>';
+  });
+  listEl.innerHTML = html;
+  var countEl = document.getElementById("atCount");
+  if (countEl) countEl.textContent = files.length + " file" + (files.length !== 1 ? "s" : "");
+}
+
+function filterAtFiles(query) {
+  if (!query) { renderAtList(state.documents); return; }
+  var q = query.toLowerCase();
+  var filtered = state.documents.filter(function(f) { return f.toLowerCase().indexOf(q) !== -1; });
+  renderAtList(filtered);
+}
+
+function selectAtFile(filename) {
+  var ta = document.getElementById("questionInput");
+  var pos = ta.selectionStart;
+  var before = ta.value.substring(0, pos);
+  var after = ta.value.substring(pos);
+  // Remove trailing @ if it was just typed
+  if (before.endsWith("@")) before = before.slice(0, -1);
+  // Also remove any partial filename typed after @ (e.g., "@some" -> user picks "report.pdf")
+  var lastAtIdx = before.lastIndexOf("@");
+  if (lastAtIdx !== -1 && (lastAtIdx === 0 || /[\s]/.test(before[lastAtIdx - 1]))) {
+    before = before.substring(0, lastAtIdx);
+  }
+  ta.value = before + "@" + filename + " " + after;
+  state.sourceFilter = filename;
+  ta.focus();
+  // Move cursor to after the inserted reference
+  var newCursorPos = before.length + filename.length + 2;
+  ta.setSelectionRange(newCursorPos, newCursorPos);
+  document.getElementById("atDropdown").classList.remove("show");
+  updateSendBtn();
+  autoResize(ta);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MODE SWITCHING
+   ═══════════════════════════════════════════════════════════ */
+function setMode(mode) {
+  state.processingMode = mode;
+  document.querySelectorAll(".mode-tab").forEach(function(btn) {
+    btn.className = "mode-tab" + (btn.dataset.mode === mode ? (" active-" + mode) : "");
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TEXT INPUT & SEND
+   ═══════════════════════════════════════════════════════════ */
+function setupTextarea() {
+  var ta = document.getElementById("questionInput");
+  ta.addEventListener("input", function() { autoResize(ta); updateSendBtn(); });
+  ta.addEventListener("input", function() {
+    var val = ta.value;
+    var pos = ta.selectionStart;
+    if (val[pos - 1] === "@" && (pos === 1 || /[\s]/.test(val[pos - 2]))) {
+      toggleAtPicker();
+    }
+  });
+  ta.addEventListener("keydown", function(e) {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); askQuestion(); }
+  });
+}
+
+function autoResize(ta) { ta.style.height = "auto"; ta.style.height = Math.min(160, Math.max(46, ta.scrollHeight)) + "px"; }
+function updateSendBtn() { document.getElementById("sendBtn").disabled = !document.getElementById("questionInput").value.trim() || state.isStreaming; }
+
+/* ═══════════════════════════════════════════════════════════
+   ASK QUESTION (SSE STREAMING)
+   ═══════════════════════════════════════════════════════════ */
+function askQuestion() {
+  var ta = document.getElementById("questionInput");
+  var question = ta.value.trim();
+  if (!question || state.isStreaming) return;
+
+  document.getElementById("chatEmpty").style.display = "none";
+  state.isStreaming = true;
+  updateSendBtn();
+
+  var body = {
+    question: question,
+    searchMode: document.getElementById("searchMode").value,
+    processingMode: state.processingMode,
+    rewriteQuery: document.getElementById("optRewrite").checked,
+    rerank: document.getElementById("optRerank").checked,
+    enableVerification: document.getElementById("optVerify").checked,
+    enableClassification: document.getElementById("optClassify").checked,
+    enableDecomposition: document.getElementById("optDecompose").checked,
+    enableRelated: document.getElementById("optRelated").checked,
+    enableSummarization: document.getElementById("optSummarize").checked,
+    sourceFilter: state.sourceFilter,
+    sessionId: state.sessionId
+  };
+
+  addMsg("user", question);
+  ta.value = ""; autoResize(ta); state.sourceFilter = null;
+
+  var msgId = "msg_" + Date.now();
+  var msgHtml = '<div class="msg msg-assis" id="' + msgId + '">' +
+    '<div class="bubble"><div class="msg-head">' +
+    '<span class="mode-badge mode-' + state.processingMode + '">' + state.processingMode.toUpperCase() + '</span>' +
+    '<span class="conf"></span></div>' +
+    '<div class="msg-body"><div class="typing"><span></span><span></span><span></span></div></div></div></div>';
+  document.getElementById("chatMessages").insertAdjacentHTML("beforeend", msgHtml);
+  scrollBottom();
+
+  fetch("/api/ask/stream", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+    .then(function(response) {
+      if (!response.ok) return response.text().then(function(t) { throw new Error(t); });
+      var reader = response.body.getReader();
+      var decoder = new TextDecoder();
+      var buffer = "";
+      var fullAnswer = "";
+      var metadata = null;
+
+      function readChunk() {
+        return reader.read().then(function(result) {
+          if (result.done) { finalizeMessage(msgId, fullAnswer, metadata, question); return; }
+          buffer += decoder.decode(result.value, { stream: true });
+          var lines = buffer.split("\n");
+          buffer = lines.pop() || "";
+          var currentEvent = "";
+
+          for (var i = 0; i < lines.length; i++) {
+            var line = lines[i].trim();
+            if (!line) { currentEvent = ""; continue; }
+            if (line.indexOf("event: ") === 0) { currentEvent = line.slice(7); continue; }
+            if (line.indexOf("data: ") !== 0) continue;
+            var data = line.slice(6);
+            if (data === "") continue;
+
+            try {
+              var parsed = JSON.parse(data);
+              if (currentEvent === "metadata" || (!metadata && currentEvent !== "token")) {
+                metadata = parsed;
+                updateMsgHead(msgId, parsed);
+              } else if (currentEvent === "token") {
+                fullAnswer += parsed.text;
+                var bodyEl = document.querySelector("#" + msgId + " .msg-body");
+                if (bodyEl) bodyEl.innerHTML = renderMarkdown(fullAnswer);
+                scrollBottom();
+              } else if (currentEvent === "verification") {
+                // Will be appended in finalizeMessage
+                if (metadata) metadata.verification = parsed;
+              } else if (currentEvent === "related") {
+                if (metadata) metadata.relatedQuestions = parsed.questions || [];
+              } else if (currentEvent === "metadata_update") {
+                metadata = parsed;
+                updateMsgHead(msgId, parsed);
+              } else if (currentEvent === "done") {
+                finalizeMessage(msgId, fullAnswer, metadata, question);
+                return;
+              } else if (currentEvent === "error") {
+                var bodyEl2 = document.querySelector("#" + msgId + " .msg-body");
+                if (bodyEl2) bodyEl2.innerHTML = '<div class="error-msg">' + escHtml(parsed.error || "Unknown error") + '</div>';
+                state.isStreaming = false; updateSendBtn(); return;
+              }
+            } catch (e) {
+              if (currentEvent === "token" && data && data !== "[DONE]") {
+                fullAnswer += data;
+                var bodyEl3 = document.querySelector("#" + msgId + " .msg-body");
+                if (bodyEl3) bodyEl3.innerHTML = renderMarkdown(fullAnswer);
+                scrollBottom();
+              }
+            }
+            currentEvent = "";
+          }
+          readChunk();
+        });
+      }
+      readChunk();
+    })
+    .catch(function(err) {
+      var bodyEl = document.querySelector("#" + msgId + " .msg-body");
+      if (bodyEl) bodyEl.innerHTML = '<div class="error-msg">' + escHtml(err.message) + '</div>';
+      state.isStreaming = false; updateSendBtn();
+    });
+}
+
+function updateMsgHead(msgId, meta) {
+  if (!meta || !meta.retrievalStats) return;
+  var rs = meta.retrievalStats;
+  var conf = meta.confidence || 0;
+  var confColor = conf > 0.7 ? "var(--green)" : conf > 0.4 ? "var(--amber)" : "var(--red)";
+  var headEl = document.querySelector("#" + msgId + " .msg-head");
+  if (headEl) {
+    headEl.innerHTML = '<span class="mode-badge mode-' + (meta.processingMode || "hard") + '">' + (meta.processingMode || "hard").toUpperCase() + '</span>' +
+      '<span class="conf"><span>' + (conf * 100).toFixed(0) + '%</span><div class="conf-bar"><div class="fill" style="width:' + (conf * 100) + '%;background:' + confColor + '"></div></div></span>' +
+      '<span style="font-size:10px;color:var(--t3)">' + rs.latencyMs + 'ms</span>';
+  }
+}
+
+function finalizeMessage(msgId, answer, meta, question) {
+  if (!answer && meta && meta.answer) answer = meta.answer;
+  var bodyEl = document.querySelector("#" + msgId + " .msg-body");
+  if (!bodyEl) { state.isStreaming = false; updateSendBtn(); return; }
+
+  var html = renderMarkdown(answer);
+  if (meta && meta.sources && meta.sources.length) html += buildSourcesSection(meta.sources);
+  if (meta && meta.verification) html += buildVerificationSection(meta.verification);
+  if (meta && meta.insights) html += buildInsightsSection(meta.insights);
+  if (meta && meta.relatedQuestions && meta.relatedQuestions.length) html += buildRelatedSection(meta.relatedQuestions);
+  if (meta && meta.queryClassification) html += buildClassificationSection(meta.queryClassification);
+  if (meta && meta.retrievalStats && meta.retrievalStats.pipelineSteps) html += buildPipelineSection(meta.retrievalStats.pipelineSteps);
+  html += buildFeedbackSection(question, answer, meta);
+
+  bodyEl.innerHTML = html;
+  state.isStreaming = false; updateSendBtn();
+  state.lastResponse = meta;
+  updateInspector(meta);
+  scrollBottom();
+}
+
+/* ═══════════════════════════════════════════════════════════
+   BUILD MESSAGE SECTIONS
+   ═══════════════════════════════════════════════════════════ */
+function buildSourcesSection(sources) {
+  var html = '<div class="msg-sec"><div class="msg-sec-title" onclick="toggleSec(this)"><span class="arrow">&#9660;</span> Sources (' + sources.length + ')</div><div class="msg-sec-body">';
+  sources.forEach(function(s) {
+    html += '<div class="source-item"><div class="src-head"><span class="src-name">' + escHtml(s.document) + '</span><span class="src-page">Section ' + s.page + '</span><span class="src-score">' + (s.score * 100).toFixed(1) + '%</span></div><div class="src-snippet">' + escHtml(s.snippet) + '</div></div>';
+  });
+  return html + "</div></div>";
+}
+
+function buildVerificationSection(v) {
+  var cls = v.grounded === true ? "verify-true" : v.grounded === false ? "verify-false" : "verify-null";
+  var label = v.grounded === true ? "Grounded" : v.grounded === false ? "Not Grounded" : "Unverified";
+  var html = '<div class="msg-sec"><div class="msg-sec-title" onclick="toggleSec(this)"><span class="arrow">&#9660;</span> Verification</div><div class="msg-sec-body"><span class="verify-badge ' + cls + '">' + label + '</span> <span style="font-size:11px;color:var(--t3)">Score: ' + (v.score * 100).toFixed(0) + '%</span>';
+  if (v.issues && v.issues.length) {
+    html += '<ul class="verify-issues">';
+    v.issues.forEach(function(i) { html += "<li>" + escHtml(i) + "</li>"; });
+    html += "</ul>";
+  }
+  return html + "</div></div>";
+}
+
+function buildInsightsSection(ins) {
+  var html = '<div class="msg-sec"><div class="msg-sec-title" onclick="toggleSec(this)"><span class="arrow">&#9660;</span> Deep Insights</div><div class="msg-sec-body"><div class="insight-grid">';
+  [{ title: "Entities", items: ins.entities || [] }, { title: "Relationships", items: ins.relationships || [] }, { title: "Metrics & Data", items: ins.metrics || [] }, { title: "Patterns", items: ins.patterns || [] }].forEach(function(sec) {
+    html += '<div class="insight-card"><div class="ic-title">' + sec.title + '</div><div class="ic-items">';
+    if (sec.items.length === 0) html += '<span style="color:var(--t3)">None found</span>';
+    else sec.items.forEach(function(item) { html += "<span>" + escHtml(item) + "</span>"; });
+    html += "</div></div>";
+  });
+  if (ins.gaps && ins.gaps.length) {
+    html += '<div class="insight-card" style="grid-column:1/-1"><div class="ic-title">Gaps Identified</div><div class="ic-items">';
+    ins.gaps.forEach(function(g) { html += '<span style="color:var(--amber)">' + escHtml(g) + '</span>'; });
+    html += "</div></div>";
+  }
+  return html + "</div></div></div>";
+}
+
+function buildRelatedSection(questions) {
+  var html = '<div class="msg-sec"><div class="msg-sec-title" onclick="toggleSec(this)"><span class="arrow">&#9660;</span> Related Questions</div><div class="msg-sec-body"><div class="related-chips">';
+  questions.forEach(function(q) { html += '<div class="related-chip" onclick="useRelated(this)">' + escHtml(q) + '</div>'; });
+  return html + "</div></div></div>";
+}
+
+function buildClassificationSection(cls) {
+  if (!cls || !cls.type) return "";
+  var colors = { factual: "var(--blue)", procedural: "var(--green)", analytical: "var(--purple)", comparative: "var(--amber)" };
+  var c = colors[cls.type] || "var(--t2)";
+  return '<div class="msg-sec"><div class="msg-sec-title" onclick="toggleSec(this)"><span class="arrow">&#9660;</span> Classification</div><div class="msg-sec-body">' +
+    '<div style="font-size:12px"><strong style="color:' + c + '">' + escHtml(cls.type) + '</strong> &mdash; ' + escHtml(cls.reasoning || "") + '<br><span style="color:var(--t3);font-size:11px">Strategy: ' + escHtml(cls.strategy || "") + '</span></div></div></div>';
+}
+
+function buildPipelineSection(steps) {
+  var html = '<div class="msg-sec"><div class="msg-sec-title" onclick="toggleSec(this)"><span class="arrow">&#9660;</span> Pipeline</div><div class="msg-sec-body"><div class="pipeline-pills">';
+  steps.forEach(function(s) { html += '<span class="pipeline-pill">' + escHtml(s) + '</span>'; });
+  return html + "</div></div></div>";
+}
+
+function buildFeedbackSection(question, answer, meta) {
+  return '<div class="feedback-row"><span>Rate this answer:</span><div class="stars" id="stars_' + Date.now() + '">' +
+    '<button class="star-btn" onclick="rate(1,this)">&#9733;</button>' +
+    '<button class="star-btn" onclick="rate(2,this)">&#9733;</button>' +
+    '<button class="star-btn" onclick="rate(3,this)">&#9733;</button>' +
+    '<button class="star-btn" onclick="rate(4,this)">&#9733;</button>' +
+    '<button class="star-btn" onclick="rate(5,this)">&#9733;</button></div>' +
+    '<span id="rateMsg" style="font-size:11px;color:var(--green);display:none">Thanks for your feedback!</span></div>';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FEEDBACK, RELATED, UTILITIES
+   ═══════════════════════════════════════════════════════════ */
+function rate(n, btn) {
+  var stars = btn.parentElement;
+  stars.querySelectorAll(".star-btn").forEach(function(b, i) { b.classList.toggle("active", i < n); });
+  var msg = btn.closest(".msg");
+  var questionText = "", answerText = "";
+  var userMsgs = document.querySelectorAll(".msg-user .bubble");
+  if (userMsgs.length) questionText = userMsgs[userMsgs.length - 1].textContent;
+  var bodyEl = msg ? msg.querySelector(".msg-body") : null;
+  if (bodyEl) answerText = bodyEl.textContent.substring(0, 500);
+  fetch("/api/feedback", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question: questionText, answer: answerText, rating: n, mode: state.processingMode }) });
+  var rm = stars.parentElement.querySelector("#rateMsg") || document.getElementById("rateMsg");
+  if (rm) rm.style.display = "inline";
+}
+
+function useRelated(el) {
+  document.getElementById("questionInput").value = el.textContent;
+  updateSendBtn();
+  document.getElementById("questionInput").focus();
+}
+
+function toggleSec(titleEl) {
+  titleEl.classList.toggle("collapsed");
+  var body = titleEl.nextElementSibling;
+  if (body) body.classList.toggle("collapsed");
+}
+
+function togglePanel() {
+  var p = document.getElementById("rightPanel");
+  var btn = document.getElementById("btnPanel");
+  p.classList.toggle("open"); btn.classList.toggle("active");
+  document.getElementById("rpToggle").textContent = p.classList.contains("open") ? "&#9654;" : "&#9664;";
+}
+
+function updateInspector(meta) {
+  if (!meta || !meta.retrievalStats) return;
+  var rs = meta.retrievalStats;
+  var html = '<div class="rp-section"><h4>Retrieval Stats</h4>';
+  html += rpRow("Latency", rs.latencyMs + " ms");
+  html += rpRow("Chunks Searched", rs.chunksSearched);
+  html += rpRow("Chunks Retrieved", rs.chunksRetrieved);
+  html += rpRow("Top Score", (rs.topScore * 100).toFixed(1) + "%");
+  html += rpRow("Search Mode", rs.searchMode);
+  html += rpRow("Processing Mode", rs.processingMode || "hard");
+  html += rpRow("Query Rewritten", rs.queryRewritten ? "Yes" : "No");
+  html += rpRow("Re-ranked", rs.reranked ? "Yes" : "No");
+  html += rpRow("Queries Used", rs.queriesUsed);
+  html += "</div>";
+  if (rs.usage) {
+    html += '<div class="rp-section"><h4>Token Usage</h4>';
+    html += rpRow("Prompt Tokens", rs.usage.prompt_tokens || "N/A");
+    html += rpRow("Completion Tokens", rs.usage.completion_tokens || "N/A");
+    html += rpRow("Total Tokens", rs.usage.total_tokens || "N/A");
+    html += "</div>";
+  }
+  if (rs.pipelineSteps && rs.pipelineSteps.length) {
+    html += '<div class="rp-section"><h4>Pipeline Steps</h4><div class="pipeline-pills">';
+    rs.pipelineSteps.forEach(function(s) { html += '<span class="pipeline-pill">' + escHtml(s) + '</span>'; });
+    html += "</div></div>";
+  }
+  if (meta.verification) {
+    html += '<div class="rp-section"><h4>Verification</h4>';
+    html += rpRow("Grounded", meta.verification.grounded === true ? "Yes" : meta.verification.grounded === false ? "No" : "N/A");
+    html += rpRow("Score", (meta.verification.score * 100).toFixed(0) + "%");
+    html += "</div>";
+  }
+  if (meta.queryClassification) {
+    html += '<div class="rp-section"><h4>Query Classification</h4>';
+    html += rpRow("Type", meta.queryClassification.type);
+    html += rpRow("Reasoning", meta.queryClassification.reasoning);
+    html += rpRow("Strategy", meta.queryClassification.strategy);
+    html += "</div>";
+  }
+  document.getElementById("rpBody").innerHTML = html;
+}
+
+function rpRow(label, value) {
+  return '<div class="rp-row"><span class="lbl">' + label + '</span><span class="val">' + escHtml(String(value)) + '</span></div>';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MODALS — Analytics & Formats
+   ═══════════════════════════════════════════════════════════ */
+function showAnalytics() {
+  fetch("/api/analytics").then(function(r) { return r.json(); }).then(function(d) {
+    var html = '<div class="stat-grid">';
+    html += statCard(d.totalQueries, "Total Queries");
+    html += statCard(d.successfulQueries, "Successful");
+    html += statCard(d.totalChunksIndexed, "Chunks Indexed");
+    html += statCard(d.uniqueSources, "Documents");
+    html += statCard(d.totalSessions, "Sessions");
+    html += statCard(d.averageFeedback !== "N/A" ? d.averageFeedback + "/5" : "N/A", "Avg Rating");
+    html += statCard(formatUptime(d.uptime), "Uptime");
+    html += statCard(d.totalMessages, "Messages");
+    html += "</div>";
+    if (d.sourceStats && d.sourceStats.length) {
+      html += '<h4 style="font-size:12px;color:var(--t2);margin:16px 0 8px;font-weight:600">Document Sources</h4>';
+      d.sourceStats.forEach(function(s) { html += '<div class="rp-row" style="padding:4px 0"><span class="lbl">' + escHtml(s.filename) + '</span><span class="val">' + s.chunks + ' chunks</span></div>'; });
+    }
+    document.getElementById("analyticsBody").innerHTML = html;
+    document.getElementById("analyticsModal").classList.add("show");
+  });
+}
+
+function showFormats() {
+  fetch("/api/supported-formats").then(function(r) { return r.json(); }).then(function(d) {
+    var html = '<p style="font-size:13px;color:var(--t2);margin-bottom:16px">Supports <strong style="color:var(--t0)">' + d.totalCount + ' file formats</strong> across multiple categories.</p>';
+    for (var cat in d.categories) {
+      html += '<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:700;color:var(--t1);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">' + escHtml(cat) + '</div><div class="format-grid">';
+      d.categories[cat].forEach(function(ext) {
+        var cls = "fmt-" + ({ pdf: "pdf", docx: "docx", xlsx: "xlsx", csv: "csv", tsv: "csv", json: "json", html: "html", htm: "html" }[ext] || "default");
+        html += '<span class="format-tag ' + cls + '">' + ext + '</span>';
+      });
+      html += "</div></div>";
+    }
+    document.getElementById("formatsBody").innerHTML = html;
+    document.getElementById("formatsModal").classList.add("show");
+  });
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove("show"); }
+function statCard(val, label) { return '<div class="stat-card"><div class="sc-val">' + val + '</div><div class="sc-lbl">' + label + '</div></div>'; }
+function formatUptime(s) { if (s < 60) return s + "s"; if (s < 3600) return Math.floor(s / 60) + "m " + (s % 60) + "s"; return Math.floor(s / 3600) + "h " + Math.floor((s % 3600) / 60) + "m"; }
+
+/* ═══════════════════════════════════════════════════════════
+   CHAT UTILITIES
+   ═══════════════════════════════════════════════════════════ */
+function clearChat() {
+  document.getElementById("chatMessages").innerHTML = "";
+  document.getElementById("chatEmpty").style.display = "flex";
+  document.getElementById("rpBody").innerHTML = '<p style="color:var(--t3);font-size:12px;text-align:center;padding:40px 0">Ask a question to see detailed retrieval analysis here.</p>';
+}
+
+function newSession() {
+  state.sessionId = "sess_" + Math.random().toString(36).slice(2, 10);
+  sessionStorage.setItem("eka_sid", state.sessionId);
+  clearChat();
+}
+
+function exportChat() { window.open("/api/export/" + state.sessionId, "_blank"); }
+
+function addMsg(role, text) {
+  var cls = role === "user" ? "msg-user" : "msg-assis";
+  var html = '<div class="msg ' + cls + '"><div class="bubble">' + (role === "user" ? escHtml(text) : renderMarkdown(text)) + '</div></div>';
+  document.getElementById("chatMessages").insertAdjacentHTML("beforeend", html);
+  scrollBottom();
+}
+
+function scrollBottom() { var el = document.getElementById("chatArea"); el.scrollTop = el.scrollHeight; }
+
+function escHtml(s) { var d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
+function escAttr(s) { return s.replace(/'/g, "\\'").replace(/"/g, "&quot;"); }
+
+function renderMarkdown(text) {
+  if (!text) return "";
+  var h = escHtml(text);
+  h = h.replace(/^### (.+)$/gm, "<h3>$1</h3>");
+  h = h.replace(/^## (.+)$/gm, "<h2>$1</h2>");
+  h = h.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+  h = h.replace(/\`([^`]+)\`/g, "<code>$1</code>");
+  h = h.replace(/\`\`\`[\s\S]*?\`\`\`/g, function(m) { return "<pre>" + m.replace(/\`\`\`\w*\n?/g, "") + "</pre>"; });
+  h = h.replace(/\[Source (\d+)\]/g, '<span class="source-ref-tag">[Source $1]</span>');
+  h = h.replace(/^[-*] (.+)$/gm, "<li>$1</li>");
+  h = h.replace(/((?:<li>.*<\/li>\n?)+)/g, "<ul>$1</ul>");
+  h = h.replace(/^\d+\. (.+)$/gm, "<li>$1</li>");
+  h = h.replace(/\n\n/g, "<br><br>");
+  h = h.replace(/\n/g, "<br>");
+  return h;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   EVENT LISTENERS
+   ═══════════════════════════════════════════════════════════ */
+document.querySelectorAll(".modal-overlay").forEach(function(overlay) {
+  overlay.addEventListener("click", function(e) { if (e.target === overlay) overlay.classList.remove("show"); });
+});
+
+document.addEventListener("click", function(e) {
+  var dd = document.getElementById("atDropdown");
+  if (!e.target.closest(".at-btn") && !e.target.closest(".at-dropdown")) {
+    dd.classList.remove("show");
+  }
+});
+</script>
+</body>
+</html>

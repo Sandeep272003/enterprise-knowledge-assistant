@@ -1,0 +1,1139 @@
+================================================================================
+ENTERPRISE KNOWLEDGE ASSISTANT (EKA) — COMPREHENSIVE TEST CASES
+================================================================================
+Based on: Python Fundamentals document (uploaded as test content)
+Model: llama-3.3-70b-versatile | Embedding: Local TF-IDF
+================================================================================
+
+HOW TO USE:
+1. Start the server: npm start
+2. Open http://localhost:3000
+3. Upload the Python fundamentals document (or any .txt/.pdf/.md file)
+4. Follow each test case below:
+   - INPUT = what you type/select/do
+   - EXPECTED OUTPUT = what you should see/verify
+
+================================================================================
+SECTION 1: UI LAYOUT & VISUAL TESTS
+================================================================================
+
+--------------------------------------------------------------------------------
+TEST 1.1 — Input Box Position (Bottom of Screen)
+--------------------------------------------------------------------------------
+INPUT:
+  - Just open the app, no documents uploaded yet
+EXPECTED OUTPUT:
+  [PASS] Input box with mode tabs (Simple/Hard/Deep) is at the BOTTOM of the screen
+  [PASS] Header bar "Enterprise Knowledge Assistant" is at the TOP
+  [PASS] Empty state "Enterprise Knowledge Assistant" with logo is in the MIDDLE (between header and input)
+  [PASS] Input box is visually pinned to the bottom edge
+  [PASS] Left sidebar is on the left side with upload zone
+  [PASS] No layout shift when typing in the input box
+
+--------------------------------------------------------------------------------
+TEST 1.2 — Dark/Light Theme Toggle
+--------------------------------------------------------------------------------
+INPUT:
+  - Click the sun/moon icon in the sidebar header
+EXPECTED OUTPUT:
+  [PASS] Theme switches from dark to light (or light to dark)
+  [PASS] All elements (sidebar, header, chat area, input) change colors smoothly
+  [PASS] Text remains readable in both themes
+  [PASS] Theme preference is saved (refresh page → same theme)
+
+--------------------------------------------------------------------------------
+TEST 1.3 — Mode Tabs Inside Input Box
+--------------------------------------------------------------------------------
+INPUT:
+  - Look at the input box area
+EXPECTED OUTPUT:
+  [PASS] Three mode tabs visible INSIDE the input container: Simple, Hard, Deep
+  [PASS] Simple has a lightning icon
+  [PASS] Hard has a microscope icon
+  [PASS] Deep has a brain icon
+  [PASS] One tab is visually active (highlighted with color)
+  [PASS] Default active mode is "Hard" (blue highlight)
+  [PASS] NO word count numbers (500/1000/2000) are displayed in the UI
+
+--------------------------------------------------------------------------------
+TEST 1.4 — Input Options Row
+--------------------------------------------------------------------------------
+INPUT:
+  - Look below the input box
+EXPECTED OUTPUT:
+  [PASS] Search mode dropdown: Semantic / Hybrid (Best) / Keyword (BM25)
+  [PASS] Checkboxes: Rewrite, Re-rank, Verify, Classify (checked), Decompose, Related (checked), Summarize
+  [PASS] "Hybrid (Best)" is the default selected search mode
+  [PASS] Classify and Related checkboxes are checked by default
+
+--------------------------------------------------------------------------------
+TEST 1.5 — Sidebar Components
+--------------------------------------------------------------------------------
+INPUT:
+  - Look at the left sidebar
+EXPECTED OUTPUT:
+  [PASS] "Knowledge AI v6.0" header with green pulsing dot
+  [PASS] Theme toggle button (sun/moon icon)
+  [PASS] Upload zone with "+" icon and drag-drop instructions
+  [PASS] "20+ formats supported" hint text
+  [PASS] "INDEXED DOCUMENTS" section header with count
+  [PASS] "Clear All" button next to document count
+  [PASS] Bottom action buttons: "Clear Chat", "Export MD", "New Session"
+
+
+================================================================================
+SECTION 2: FILE UPLOAD & DOCUMENT MANAGEMENT
+================================================================================
+
+--------------------------------------------------------------------------------
+TEST 2.1 — Upload a TXT File
+--------------------------------------------------------------------------------
+INPUT:
+  - Click the upload zone or drag a .txt file (e.g., python_fundamentals.txt)
+EXPECTED OUTPUT:
+  [PASS] Upload progress bar appears and fills to 100%
+  [PASS] File appears in the sidebar document list
+  [PASS] File shows format badge (TXT), filename, and chunk count
+  [PASS] "INDEXED DOCUMENTS" count increments (e.g., "1")
+  [PASS] Upload label shows "Indexed!" with green text
+  [PASS] No error messages in console or UI
+
+--------------------------------------------------------------------------------
+TEST 2.2 — Upload a PDF File
+--------------------------------------------------------------------------------
+INPUT:
+  - Upload a .pdf file
+EXPECTED OUTPUT:
+  [PASS] File uploads successfully
+  [PASS] Format badge shows "PDF"
+  [PASS] Document count increments
+  [PASS] File is listed in sidebar with correct name
+  [PASS] Chunks are extracted and indexed
+
+--------------------------------------------------------------------------------
+TEST 2.3 — Upload a Markdown File
+--------------------------------------------------------------------------------
+INPUT:
+  - Upload a .md file
+EXPECTED OUTPUT:
+  [PASS] File uploads successfully
+  [PASS] Format badge shows "MD"
+  [PASS] Content is properly extracted (no raw markdown artifacts in answers)
+
+--------------------------------------------------------------------------------
+TEST 2.4 — Upload a CSV File
+--------------------------------------------------------------------------------
+INPUT:
+  - Upload a .csv file with headers and data rows
+EXPECTED OUTPUT:
+  [PASS] File uploads successfully
+  [PASS] Format badge shows "CSV"
+  [PASS] Tabular data is converted to readable text chunks
+  [PASS] Questions about the data return correct answers
+
+--------------------------------------------------------------------------------
+TEST 2.5 — Upload a JSON File
+--------------------------------------------------------------------------------
+INPUT:
+  - Upload a .json file
+EXPECTED OUTPUT:
+  [PASS] File uploads successfully
+  [PASS] Format badge shows "JSON"
+  [PASS] Nested JSON structures are flattened into readable chunks
+
+--------------------------------------------------------------------------------
+TEST 2.6 — Upload an HTML File
+--------------------------------------------------------------------------------
+INPUT:
+  - Upload a .html file
+EXPECTED OUTPUT:
+  [PASS] File uploads successfully
+  [PASS] Format badge shows "HTML"
+  [PASS] Text content is extracted (HTML tags stripped)
+
+--------------------------------------------------------------------------------
+TEST 2.7 — Batch Upload (Multiple Files)
+--------------------------------------------------------------------------------
+INPUT:
+  - Upload 2-3 files at once (drag multiple or select multiple)
+EXPECTED OUTPUT:
+  [PASS] All files upload and index successfully
+  [PASS] Each file appears separately in the document list
+  [PASS] Document count reflects total number of files
+  [PASS] Progress bar shows for the batch
+
+--------------------------------------------------------------------------------
+TEST 2.8 — Per-File Delete Button
+--------------------------------------------------------------------------------
+INPUT:
+  - Upload 2+ files
+  - Hover over a file in the sidebar document list
+  - Click the X (delete) button on one file
+EXPECTED OUTPUT:
+  [PASS] Delete button (X) appears on hover for each file
+  [PASS] Clicking X removes that specific file from the list
+  [PASS] Document count decrements
+  [PASS] Other files remain in the list unaffected
+  [PASS] Chunks from deleted file are removed from the vector store
+
+--------------------------------------------------------------------------------
+TEST 2.9 — Clear All Documents
+--------------------------------------------------------------------------------
+INPUT:
+  - Upload 2+ files
+  - Click "Clear All" button in the sidebar
+EXPECTED OUTPUT:
+  [PASS] All documents are removed from the list
+  [PASS] Document count resets to "0"
+  [PASS] "No documents uploaded yet" message appears
+  [PASS] Subsequent queries return "No documents indexed yet" error
+
+--------------------------------------------------------------------------------
+TEST 2.10 — Invalid File Type Rejection
+--------------------------------------------------------------------------------
+INPUT:
+  - Try to upload a .exe, .zip, or .png file
+EXPECTED OUTPUT:
+  [PASS] Upload is rejected with an error message
+  [PASS] Error mentions supported formats
+  [PASS] No file appears in the document list
+
+
+================================================================================
+SECTION 3: QUESTION ANSWERING — SIMPLE MODE
+================================================================================
+Prerequisite: Upload the Python fundamentals document before these tests.
+
+--------------------------------------------------------------------------------
+TEST 3.1 — Simple Factual Question
+--------------------------------------------------------------------------------
+INPUT:
+  - Select "Simple" mode tab in the input box
+  - Type: "What is Python?"
+  - Click send
+EXPECTED OUTPUT:
+  [PASS] Response streams in (SSE, not a single block)
+  [PASS] Mode badge shows "SIMPLE" (green)
+  [PASS] Answer is concise (around 500 words max)
+  [PASS] Answer mentions Python is a high-level, interpreted language
+  [PASS] Sources section shows relevant chunks from the document
+  [PASS] Confidence score bar is visible
+  [PASS] Pipeline pills show which steps were used (e.g., classify, stream)
+  [PASS] 5-star feedback row appears at the bottom of the response
+
+--------------------------------------------------------------------------------
+TEST 3.2 — Simple Question with @ File Reference
+--------------------------------------------------------------------------------
+INPUT:
+  - Select "Simple" mode
+  - Type "@" in the input box
+EXPECTED OUTPUT:
+  [PASS] File picker dropdown appears ABOVE the input box
+  [PASS] ALL uploaded files are listed (not just the latest one)
+  [PASS] Each file shows format badge, filename, and metadata
+  [PASS] Search box at top of dropdown filters files as you type
+
+INPUT (continued):
+  - Click on the Python file in the dropdown
+  - Complete the question: "What are Python data types?"
+  - Send
+EXPECTED OUTPUT:
+  [PASS] The @filename reference appears in the input text
+  [PASS] Answer focuses on content from that specific file
+  [PASS] Source filter badge or indicator shows the targeted file
+
+--------------------------------------------------------------------------------
+TEST 3.3 — Simple Mode with Code Example Question
+--------------------------------------------------------------------------------
+INPUT:
+  - Mode: Simple
+  - Type: "Show me a for loop example in Python"
+  - Send
+EXPECTED OUTPUT:
+  [PASS] Response includes a code block with for loop syntax
+  [PASS] Code is rendered with proper formatting (monospace font, code background)
+  [PASS] Explanation is concise
+  [PASS] Sources reference the loops section of the document
+
+
+================================================================================
+SECTION 4: QUESTION ANSWERING — HARD MODE
+================================================================================
+
+--------------------------------------------------------------------------------
+TEST 4.1 — Hard Mode Thorough Analysis
+--------------------------------------------------------------------------------
+INPUT:
+  - Select "Hard" mode tab (blue highlight)
+  - Type: "Explain Python data types in detail with examples"
+  - Send
+EXPECTED OUTPUT:
+  [PASS] Mode badge shows "HARD" (blue)
+  [PASS] Response is more detailed than Simple mode (around 1000 words)
+  [PASS] Answer covers int, float, str, bool, list, tuple, dict, set
+  [PASS] Each data type has code examples
+  [PASS] Structured formatting with headings or sections
+  [PASS] Sources show multiple relevant chunks
+
+--------------------------------------------------------------------------------
+TEST 4.2 — Hard Mode with Rewrite Enabled
+--------------------------------------------------------------------------------
+INPUT:
+  - Mode: Hard
+  - Check the "Rewrite" checkbox
+  - Type: "python list methods" (intentionally vague/short query)
+  - Send
+EXPECTED OUTPUT:
+  [PASS] Pipeline pills include "rewrite" step
+  [PASS] Answer is thorough despite the vague input query
+  [PASS] The rewritten query is visible in the Inspector panel (if open)
+
+--------------------------------------------------------------------------------
+TEST 4.3 — Hard Mode with Verification Enabled
+--------------------------------------------------------------------------------
+INPUT:
+  - Mode: Hard
+  - Check the "Verify" checkbox
+  - Type: "Is Python a compiled language?"
+  - Send
+EXPECTED OUTPUT:
+  [PASS] Pipeline pills include "verify" step
+  [PASS] Verification badge appears (green checkmark = verified, or red = issue found)
+  [PASS] Answer correctly states Python is interpreted, not compiled
+  [PASS] Any verification issues are listed
+
+
+================================================================================
+SECTION 5: QUESTION ANSWERING — DEEP MODE
+================================================================================
+
+--------------------------------------------------------------------------------
+TEST 5.1 — Deep Mode Exhaustive Analysis
+--------------------------------------------------------------------------------
+INPUT:
+  - Select "Deep" mode tab (purple highlight)
+  - Type: "Give me a complete analysis of Python's type system, including all built-in types, mutability, and conversion between types"
+  - Send
+EXPECTED OUTPUT:
+  [PASS] Mode badge shows "DEEP" (purple)
+  [PASS] Response is very comprehensive (around 2000 words)
+  [PASS] Multiple sections with detailed analysis
+  [PASS] Covers mutability (list vs tuple), type conversion (int(), str(), float())
+  [PASS] Code examples for each concept
+  [PASS] Multiple source chunks referenced
+
+--------------------------------------------------------------------------------
+TEST 5.2 — Deep Mode with Decomposition
+--------------------------------------------------------------------------------
+INPUT:
+  - Mode: Deep
+  - Check the "Decompose" checkbox
+  - Type: "Compare Python's error handling with other languages and explain best practices"
+  - Send
+EXPECTED OUTPUT:
+  [PASS] Pipeline pills include "decompose" step
+  [PASS] Answer addresses multiple sub-questions
+  [PASS] Content covers try/except, specific exception types, and best practices
+
+
+================================================================================
+SECTION 6: SEARCH MODES
+================================================================================
+
+--------------------------------------------------------------------------------
+TEST 6.1 — Semantic Search
+--------------------------------------------------------------------------------
+INPUT:
+  - Search mode: "Semantic"
+  - Mode: Hard
+  - Type: "How do you handle errors in Python programs?"
+  - Send
+EXPECTED OUTPUT:
+  [PASS] Answer is relevant to exception handling
+  [PASS] Sources include chunks about try/except/exception handling
+  [PASS] Answer may match even if exact keywords differ (semantic understanding)
+
+--------------------------------------------------------------------------------
+TEST 6.2 — Keyword (BM25) Search
+--------------------------------------------------------------------------------
+INPUT:
+  - Search mode: "Keyword (BM25)"
+  - Mode: Hard
+  - Type: "exception handling try except ValueError"
+  - Send
+EXPECTED OUTPUT:
+  [PASS] Answer focuses on exact keyword matches
+  [PASS] Sources include chunks with those exact keywords
+  [PASS] Pipeline pills show "keyword" search was used
+
+--------------------------------------------------------------------------------
+TEST 6.3 — Hybrid Search (Default)
+--------------------------------------------------------------------------------
+INPUT:
+  - Search mode: "Hybrid (Best)"
+  - Mode: Hard
+  - Type: "What are Python classes and objects?"
+  - Send
+EXPECTED OUTPUT:
+  [PASS] Answer combines keyword and semantic results
+  [PASS] Sources are from the classes/objects section of the document
+  [PASS] Results should be better ranked than either pure keyword or pure semantic
+
+
+================================================================================
+SECTION 7: @ FILE PICKER & SOURCE FILTERING
+================================================================================
+
+--------------------------------------------------------------------------------
+TEST 7.1 — @ Dropdown Shows ALL Uploaded Files
+--------------------------------------------------------------------------------
+INPUT:
+  - Upload 3+ different files (e.g., python.txt, data.csv, notes.md)
+  - Type "@" in the input box
+EXPECTED OUTPUT:
+  [PASS] Dropdown appears showing ALL 3+ uploaded files
+  [PASS] Each file has correct format badge (TXT, CSV, MD)
+  [PASS] File count shows correct number
+  [PASS] Files are listed with their names and chunk counts
+
+--------------------------------------------------------------------------------
+TEST 7.2 — @ Dropdown Search/Filter
+--------------------------------------------------------------------------------
+INPUT:
+  - With 3+ files uploaded, type "@" then "py" in the search box
+EXPECTED OUTPUT:
+  [PASS] File list filters to show only files matching "py"
+  [PASS] Other files are hidden
+  [PASS] Clearing the search shows all files again
+
+--------------------------------------------------------------------------------
+TEST 7.3 — @ File Reference in Query
+--------------------------------------------------------------------------------
+INPUT:
+  - Upload python.txt and another file
+  - Type "@python" and select the python file from dropdown
+  - Type: "What are Python operators?"
+  - Send
+EXPECTED OUTPUT:
+  [PASS] Query includes "@python.txt" (or similar) reference
+  [PASS] Answer sources come primarily from the referenced file
+  [PASS] Content about arithmetic, comparison, logical, assignment operators
+
+
+================================================================================
+SECTION 8: RAG PIPELINE FEATURES
+================================================================================
+
+--------------------------------------------------------------------------------
+TEST 8.1 — Query Classification
+--------------------------------------------------------------------------------
+INPUT:
+  - Mode: Hard, Classify checkbox: ON (default)
+  - Type: "What is Python?"
+  - Send
+EXPECTED OUTPUT:
+  [PASS] Pipeline pills include "classify" step
+  [PASS] Classification result visible somewhere (mode badge or inspector)
+  [PASS] Query is classified as a type (factual/analytical/conceptual)
+
+--------------------------------------------------------------------------------
+TEST 8.2 — Query Rewrite
+--------------------------------------------------------------------------------
+INPUT:
+  - Mode: Hard, Rewrite checkbox: ON
+  - Type: "python functions"
+  - Send
+EXPECTED OUTPUT:
+  [PASS] Pipeline pills include "rewrite" step
+  [PASS] Answer is more detailed than the short query would normally produce
+  [PASS] Rewritten query is processed (visible in Inspector panel)
+
+--------------------------------------------------------------------------------
+TEST 8.3 — Re-ranking
+--------------------------------------------------------------------------------
+INPUT:
+  - Mode: Hard, Re-rank checkbox: ON
+  - Type: "Explain Python list comprehension"
+  - Send
+EXPECTED OUTPUT:
+  [PASS] Pipeline pills include "rerank" step
+  [PASS] Sources appear well-ordered by relevance
+  [PASS] Top source is the most relevant chunk about list comprehension
+
+--------------------------------------------------------------------------------
+TEST 8.4 — Answer Verification
+--------------------------------------------------------------------------------
+INPUT:
+  - Mode: Hard, Verify checkbox: ON
+  - Type: "Python uses curly braces {} to define code blocks"
+  - Send
+EXPECTED OUTPUT:
+  [PASS] Verification badge appears (should show red/issue since this is FALSE)
+  [PASS] Answer corrects the misconception (Python uses indentation, not braces)
+  [PASS] Verification issues listed explain why the statement is wrong
+
+--------------------------------------------------------------------------------
+TEST 8.5 — Related Questions
+--------------------------------------------------------------------------------
+INPUT:
+  - Mode: Hard, Related checkbox: ON (default)
+  - Type: "What are Python functions?"
+  - Send
+EXPECTED OUTPUT:
+  [PASS] Related questions section appears at the bottom of the response
+  [PASS] 2-4 related question chips are shown
+  [PASS] Clicking a related chip fills the input box with that question
+  [PASS] Related questions are relevant to the original topic (functions)
+
+--------------------------------------------------------------------------------
+TEST 8.6 — Context Summarization
+--------------------------------------------------------------------------------
+INPUT:
+  - Mode: Deep, Summarize checkbox: ON
+  - Type: "Give me a deep analysis of Python's string operations"
+  - Send
+EXPECTED OUTPUT:
+  [PASS] Pipeline pills include "summarize" step
+  [PASS] Long context is summarized before generating the answer
+  [PASS] Answer is coherent and not repetitive
+
+--------------------------------------------------------------------------------
+TEST 8.7 — Query Decomposition
+--------------------------------------------------------------------------------
+INPUT:
+  - Mode: Deep, Decompose checkbox: ON
+  - Type: "Explain Python's control flow including conditionals, loops, and exception handling"
+  - Send
+EXPECTED OUTPUT:
+  [PASS] Pipeline pills include "decompose" step
+  [PASS] Answer addresses ALL three sub-topics: conditionals, loops, exceptions
+  [PASS] Each sub-topic is covered with sufficient detail
+
+
+================================================================================
+SECTION 9: CONVERSATION MEMORY
+================================================================================
+
+--------------------------------------------------------------------------------
+TEST 9.1 — Follow-up Question (Context Memory)
+--------------------------------------------------------------------------------
+INPUT:
+  - Mode: Hard
+  - Q1: "What are Python data types?"
+  - Send Q1, wait for response
+  - Q2: "Can you give me examples of the mutable ones?"
+  - Send Q2
+EXPECTED OUTPUT:
+  [PASS] Q2 answer references the context from Q1 (knows "mutable ones" = mutable data types)
+  [PASS] Answer correctly identifies lists and dicts as mutable
+  [PASS] No need to re-specify "Python data types" in Q2
+
+--------------------------------------------------------------------------------
+TEST 9.2 — Conversation History Limit
+--------------------------------------------------------------------------------
+INPUT:
+  - Ask 12+ questions in sequence
+  - Then ask a follow-up referencing Q1
+EXPECTED OUTPUT:
+  [PASS] System remembers recent questions (last ~10)
+  [PASS] Very old context may be forgotten (history limit)
+  [PASS] No crash or error from long conversation
+
+--------------------------------------------------------------------------------
+TEST 9.3 — New Session Clears Memory
+--------------------------------------------------------------------------------
+INPUT:
+  - Have a conversation with a few questions
+  - Click "New Session" in the sidebar
+  - Type a follow-up question from previous session
+EXPECTED OUTPUT:
+  [PASS] Chat area clears (all messages removed)
+  [PASS] New session ID is generated
+  [PASS] Follow-up question has NO context from previous session
+  [PASS] Answer treats it as a fresh question
+
+
+================================================================================
+SECTION 10: STREAMING & SSE
+================================================================================
+
+--------------------------------------------------------------------------------
+TEST 10.1 — Response Streams In Real-Time
+--------------------------------------------------------------------------------
+INPUT:
+  - Mode: Hard
+  - Type: "Explain Python dictionaries with examples"
+  - Send
+EXPECTED OUTPUT:
+  [PASS] Response text appears incrementally (word by word / chunk by chunk)
+  [PASS] NOT a single block that appears all at once
+  [PASS] Typing indicator (three dots animation) shows while waiting
+  [PASS] Streaming completes with full response visible
+
+--------------------------------------------------------------------------------
+TEST 10.2 — Stop Streaming / New Question During Stream
+--------------------------------------------------------------------------------
+INPUT:
+  - Mode: Hard
+  - Send a question
+  - While streaming, type and send a new question
+EXPECTED OUTPUT:
+  [PASS] Previous stream is handled gracefully
+  [PASS] New question starts processing
+  [PASS] No UI crash or error messages
+
+
+================================================================================
+SECTION 11: FEEDBACK & EVALUATION
+================================================================================
+
+--------------------------------------------------------------------------------
+TEST 11.1 — 5-Star Rating
+--------------------------------------------------------------------------------
+INPUT:
+  - Ask any question and get a response
+  - Click the 4th star in the feedback row
+EXPECTED OUTPUT:
+  [PASS] Stars 1-4 highlight in amber/gold color
+  [PASS] Star 5 remains dim
+  [PASS] Rating is sent to the server (POST /api/feedback)
+  [PASS] Visual feedback confirms the rating (brief animation)
+
+--------------------------------------------------------------------------------
+TEST 11.2 — Change Rating
+--------------------------------------------------------------------------------
+INPUT:
+  - After rating 4 stars, click the 2nd star
+EXPECTED OUTPUT:
+  [PASS] Stars update to show only 1-2 highlighted
+  [PASS] New rating is sent to the server
+  [PASS] Previous rating is replaced
+
+--------------------------------------------------------------------------------
+TEST 11.3 — Rating Persistence in Analytics
+--------------------------------------------------------------------------------
+INPUT:
+  - Rate a few responses with different star ratings
+  - Click "Analytics" button in the header
+EXPECTED OUTPUT:
+  [PASS] Analytics modal opens
+  [PASS] Shows total queries, successful queries, average rating
+  [PASS] Rating distribution is visible
+  [PASS] Feedback count matches the number of ratings given
+
+
+================================================================================
+SECTION 12: INSPECTOR PANEL
+================================================================================
+
+--------------------------------------------------------------------------------
+TEST 12.1 — Open Inspector Panel
+--------------------------------------------------------------------------------
+INPUT:
+  - Click "Inspector" button in the header (or the arrow button on the right edge)
+EXPECTED OUTPUT:
+  [PASS] Right panel slides open (330px width)
+  [PASS] "Answer Inspector" header with close button
+  [PASS] Toggle arrow changes direction
+
+--------------------------------------------------------------------------------
+TEST 12.2 — Inspector Shows Retrieval Details
+--------------------------------------------------------------------------------
+INPUT:
+  - Open Inspector panel
+  - Ask a question in Hard mode with multiple features enabled
+EXPECTED OUTPUT:
+  [PASS] Inspector shows: query, mode, search type, rewrite status
+  [PASS] Shows retrieved source chunks with scores
+  [PASS] Shows classification result
+  [PASS] Shows confidence score
+  [PASS] Shows pipeline steps executed
+
+--------------------------------------------------------------------------------
+TEST 12.3 — Close Inspector Panel
+--------------------------------------------------------------------------------
+INPUT:
+  - With Inspector open, click the close button (X) or toggle arrow
+EXPECTED OUTPUT:
+  [PASS] Panel slides closed (width: 0)
+  [PASS] Main content area expands to fill the space
+  [PASS] Toggle arrow reappears on the right edge
+
+
+================================================================================
+SECTION 13: EXPORT & MODALS
+================================================================================
+
+--------------------------------------------------------------------------------
+TEST 13.1 — Export Chat as Markdown
+--------------------------------------------------------------------------------
+INPUT:
+  - Have a conversation with 2+ questions and responses
+  - Click "Export MD" button in the sidebar
+EXPECTED OUTPUT:
+  [PASS] A .md file is downloaded
+  [PASS] File contains the conversation in markdown format
+  [PASS] User questions and assistant responses are both included
+  [PASS] Code blocks and formatting are preserved
+
+--------------------------------------------------------------------------------
+TEST 13.2 — Clear Chat
+--------------------------------------------------------------------------------
+INPUT:
+  - Have a conversation
+  - Click "Clear Chat" button
+EXPECTED OUTPUT:
+  [PASS] All messages are removed from the chat area
+  [PASS] Empty state message reappears ("Enterprise Knowledge Assistant" centered)
+  [PASS] Session ID remains the same (conversation memory is separate)
+
+--------------------------------------------------------------------------------
+TEST 13.3 — Formats Modal
+--------------------------------------------------------------------------------
+INPUT:
+  - Click "Formats" button in the header
+EXPECTED OUTPUT:
+  [PASS] Modal opens showing all supported file formats
+  [PASS] Formats are grouped by category (Documents, Spreadsheets, etc.)
+  [PASS] Each format shows its extension (PDF, TXT, MD, DOCX, XLSX, etc.)
+  [PASS] Close button dismisses the modal
+
+--------------------------------------------------------------------------------
+TEST 13.4 — Analytics Modal (Empty State)
+--------------------------------------------------------------------------------
+INPUT:
+  - Click "Analytics" button with no queries made
+EXPECTED OUTPUT:
+  [PASS] Analytics modal opens
+  [PASS] Shows zero or default values for all stats
+  [PASS] No crash or error
+
+--------------------------------------------------------------------------------
+TEST 13.5 — Analytics Modal (With Data)
+--------------------------------------------------------------------------------
+INPUT:
+  - Ask 3+ questions, rate some responses
+  - Click "Analytics"
+EXPECTED OUTPUT:
+  [PASS] Total queries count matches questions asked
+  [PASS] Successful queries count is accurate
+  [PASS] Average rating is calculated correctly
+  [PASS] Source statistics are shown
+  [PASS] Mode usage breakdown (simple/hard/deep) is visible
+
+
+================================================================================
+SECTION 14: API ENDPOINT TESTS (CURL)
+================================================================================
+Run these from a terminal while the server is running.
+
+--------------------------------------------------------------------------------
+TEST 14.1 — Health Check
+--------------------------------------------------------------------------------
+INPUT (terminal):
+  curl http://localhost:3000/health
+EXPECTED OUTPUT:
+  {"status":"ok","sourceCount":<N>,"vectorDimension":<N>,"uptime":"<duration>"}
+
+--------------------------------------------------------------------------------
+TEST 14.2 — Upload File via API
+--------------------------------------------------------------------------------
+INPUT (terminal):
+  curl -X POST http://localhost:3000/api/upload \
+    -F "file=@python_fundamentals.txt"
+EXPECTED OUTPUT:
+  JSON with: filename, chunks, totalCharacters, status:"indexed"
+
+--------------------------------------------------------------------------------
+TEST 14.3 — List Documents
+--------------------------------------------------------------------------------
+INPUT (terminal):
+  curl http://localhost:3000/api/documents
+EXPECTED OUTPUT:
+  JSON array of objects with filename, chunkCount, format, etc.
+
+--------------------------------------------------------------------------------
+TEST 14.4 — Ask a Question (Non-Streaming)
+--------------------------------------------------------------------------------
+INPUT (terminal):
+  curl -X POST http://localhost:3000/api/ask \
+    -H "Content-Type: application/json" \
+    -d '{"question":"What is Python?","searchMode":"hybrid","processingMode":"hard","sessionId":"test1","enableClassification":true,"enableRelated":true}'
+EXPECTED OUTPUT:
+  JSON with: answer, sources[], confidence, mode, classification, relatedQuestions[]
+
+--------------------------------------------------------------------------------
+TEST 14.5 — Ask a Question (Streaming SSE)
+--------------------------------------------------------------------------------
+INPUT (terminal):
+  curl -X POST http://localhost:3000/api/ask/stream \
+    -H "Content-Type: application/json" \
+    -d '{"question":"What are Python variables?","searchMode":"hybrid","processingMode":"hard","sessionId":"test1"}'
+EXPECTED OUTPUT:
+  SSE events: event: metadata, event: sources, event: classification, event: chunk, event: related, event: done
+  Chunks arrive incrementally (not all at once)
+
+--------------------------------------------------------------------------------
+TEST 14.6 — Delete Single Document
+--------------------------------------------------------------------------------
+INPUT (terminal):
+  curl -X DELETE http://localhost:3000/api/documents/python_fundamentals.txt
+EXPECTED OUTPUT:
+  {"success":true,"message":"Deleted python_fundamentals.txt"}
+
+--------------------------------------------------------------------------------
+TEST 14.7 — Delete All Documents
+--------------------------------------------------------------------------------
+INPUT (terminal):
+  curl -X DELETE http://localhost:3000/api/documents
+EXPECTED OUTPUT:
+  {"success":true,"message":"All documents deleted","count":<N>}
+
+--------------------------------------------------------------------------------
+TEST 14.8 — Get Search Modes
+--------------------------------------------------------------------------------
+INPUT (terminal):
+  curl http://localhost:3000/api/search-modes
+EXPECTED OUTPUT:
+  ["semantic","hybrid","keyword"]
+
+--------------------------------------------------------------------------------
+TEST 14.9 — Get Processing Modes
+--------------------------------------------------------------------------------
+INPUT (terminal):
+  curl http://localhost:3000/api/processing-modes
+EXPECTED OUTPUT:
+  JSON array with mode objects: {name, temperature, maxTokens, topK, targetWords, wordRange}
+
+--------------------------------------------------------------------------------
+TEST 14.10 — Get Supported Formats
+--------------------------------------------------------------------------------
+INPUT (terminal):
+  curl http://localhost:3000/api/supported-formats
+EXPECTED OUTPUT:
+  JSON with categories: Documents, Spreadsheets, Presentations, Data/Config, Web, Logs
+  Each category lists its file extensions
+
+--------------------------------------------------------------------------------
+TEST 14.11 — Submit Feedback
+--------------------------------------------------------------------------------
+INPUT (terminal):
+  curl -X POST http://localhost:3000/api/feedback \
+    -H "Content-Type: application/json" \
+    -d '{"sessionId":"test1","question":"What is Python?","rating":5}'
+EXPECTED OUTPUT:
+  {"success":true}
+
+--------------------------------------------------------------------------------
+TEST 14.12 — Get Analytics
+--------------------------------------------------------------------------------
+INPUT (terminal):
+  curl http://localhost:3000/api/analytics
+EXPECTED OUTPUT:
+  JSON with: totalQueries, successfulQueries, averageRating, feedbackCount, sourceStats[]
+
+--------------------------------------------------------------------------------
+TEST 14.13 — Get Conversation History
+--------------------------------------------------------------------------------
+INPUT (terminal):
+  curl http://localhost:3000/api/history?sessionId=test1
+EXPECTED OUTPUT:
+  JSON array of {role, content} message objects
+
+--------------------------------------------------------------------------------
+TEST 14.14 — Export Session
+--------------------------------------------------------------------------------
+INPUT (terminal):
+  curl http://localhost:3000/api/export/test1
+EXPECTED OUTPUT:
+  Markdown text of the conversation for that session
+
+
+================================================================================
+SECTION 15: EDGE CASES & ERROR HANDLING
+================================================================================
+
+--------------------------------------------------------------------------------
+TEST 15.1 — Empty Question
+--------------------------------------------------------------------------------
+INPUT:
+  - Leave input empty, try to send
+EXPECTED OUTPUT:
+  [PASS] Send button is disabled (grayed out)
+  [PASS] No request is sent to the server
+
+--------------------------------------------------------------------------------
+TEST 15.2 — Very Short Question (Below Min Length)
+--------------------------------------------------------------------------------
+INPUT:
+  - Type "Hi" (2 chars, below MIN_QUESTION_LENGTH of 3)
+  - Try to send
+EXPECTED OUTPUT:
+  [PASS] Either send button stays disabled or server returns validation error
+  [PASS] No crash
+
+--------------------------------------------------------------------------------
+TEST 15.3 — Question Without Documents
+--------------------------------------------------------------------------------
+INPUT:
+  - Clear all documents
+  - Type a question and send
+EXPECTED OUTPUT:
+  [PASS] Error message: "No documents indexed yet. Upload documents first."
+  [PASS] Error is displayed in the chat area as an error message (not alert)
+  [PASS] App remains functional (can still upload documents after)
+
+--------------------------------------------------------------------------------
+TEST 15.4 — Very Long Question
+--------------------------------------------------------------------------------
+INPUT:
+  - Type a question close to or exceeding 2000 characters
+  - Send
+EXPECTED OUTPUT:
+  [PASS] Either truncated to max length or rejected with clear error
+  [PASS] No server crash
+
+--------------------------------------------------------------------------------
+TEST 15.5 — Special Characters in Question
+--------------------------------------------------------------------------------
+INPUT:
+  - Type: "What does `print('Hello \\n World')` do in Python?"
+  - Send
+EXPECTED OUTPUT:
+  [PASS] Special characters are handled properly
+  [PASS] Answer correctly explains the code (newline character)
+  [PASS] No injection or parsing errors
+
+--------------------------------------------------------------------------------
+TEST 15.6 — Rapid Fire Questions
+--------------------------------------------------------------------------------
+INPUT:
+  - Quickly send 3-5 questions in succession without waiting
+EXPECTED OUTPUT:
+  [PASS] All questions are processed (maybe queued)
+  [PASS] No UI freeze or crash
+  [PASS] Responses appear for each question in order
+
+--------------------------------------------------------------------------------
+TEST 15.7 — Network Error Handling
+--------------------------------------------------------------------------------
+INPUT:
+  - Stop the server (Ctrl+C)
+  - Try to send a question
+EXPECTED OUTPUT:
+  [PASS] Error message appears in the chat area
+  [PASS] App doesn't crash or become unusable
+  [PASS] Can retry when server comes back
+
+
+================================================================================
+SECTION 16: INPUT BOX SPECIFIC TESTS
+================================================================================
+
+--------------------------------------------------------------------------------
+TEST 16.1 — Textarea Auto-Resize
+--------------------------------------------------------------------------------
+INPUT:
+  - Type a long multi-line question in the input box
+EXPECTED OUTPUT:
+  [PASS] Textarea grows vertically (up to max-height: 160px)
+  [PASS] Input box expands smoothly
+  [PASS] Scrollbar appears if text exceeds max-height
+
+--------------------------------------------------------------------------------
+TEST 16.2 — Enter to Send, Shift+Enter for Newline
+--------------------------------------------------------------------------------
+INPUT:
+  - Type a question, press Enter
+EXPECTED OUTPUT:
+  [PASS] Question is sent (not a newline)
+
+INPUT:
+  - Type text, press Shift+Enter
+EXPECTED OUTPUT:
+  [PASS] New line is added in the textarea
+  [PASS] Question is NOT sent
+
+--------------------------------------------------------------------------------
+TEST 16.3 — Input Box Focus Glow
+--------------------------------------------------------------------------------
+INPUT:
+  - Click on the input textarea
+EXPECTED OUTPUT:
+  [PASS] Input container gets a blue border glow
+  [PASS] Box shadow effect appears
+  [PASS] Glow disappears when clicking outside (blur)
+
+--------------------------------------------------------------------------------
+TEST 16.4 — Send Button State
+--------------------------------------------------------------------------------
+INPUT:
+  - Empty input
+EXPECTED OUTPUT:
+  [PASS] Send button is disabled (gray, non-clickable)
+
+INPUT:
+  - Type some text
+EXPECTED OUTPUT:
+  [PASS] Send button becomes enabled (blue, clickable)
+
+--------------------------------------------------------------------------------
+TEST 16.5 — Input Box Stays at Bottom During Chat
+--------------------------------------------------------------------------------
+INPUT:
+  - Upload a document
+  - Ask 3+ questions that produce long responses
+EXPECTED OUTPUT:
+  [PASS] Input box remains at the BOTTOM of the screen throughout
+  [PASS] Chat area scrolls up to show new messages
+  [PASS] No layout shift — input box position does not jump or move
+  [PASS] Chat area auto-scrolls to latest message
+
+
+================================================================================
+SECTION 17: MODE-SPECIFIC BEHAVIOR VERIFICATION
+================================================================================
+
+--------------------------------------------------------------------------------
+TEST 17.1 — Simple Mode Word Count (Backend Only)
+--------------------------------------------------------------------------------
+INPUT:
+  - Mode: Simple
+  - Ask: "What are Python variables?"
+EXPECTED OUTPUT:
+  [PASS] Response is concise (approximately 400-600 words)
+  [PASS] NO word count is displayed anywhere in the UI
+  [PASS] Answer covers the key points without excessive detail
+
+--------------------------------------------------------------------------------
+TEST 17.2 — Hard Mode Word Count (Backend Only)
+--------------------------------------------------------------------------------
+INPUT:
+  - Mode: Hard
+  - Ask: "Explain Python exception handling in detail"
+EXPECTED OUTPUT:
+  [PASS] Response is moderately detailed (approximately 800-1200 words)
+  [PASS] NO word count is displayed anywhere in the UI
+  [PASS] More structured than Simple mode response
+
+--------------------------------------------------------------------------------
+TEST 17.3 — Deep Mode Word Count (Backend Only)
+--------------------------------------------------------------------------------
+INPUT:
+  - Mode: Deep
+  - Ask: "Provide a comprehensive analysis of Python's object-oriented programming features"
+EXPECTED OUTPUT:
+  [PASS] Response is very detailed (approximately 1800-2500 words)
+  [PASS] NO word count is displayed anywhere in the UI
+  [PASS] Multiple perspectives and exhaustive coverage
+
+
+================================================================================
+SECTION 18: SOURCE & CONFIDENCE DISPLAY
+================================================================================
+
+--------------------------------------------------------------------------------
+TEST 18.1 — Source Chunks Display
+--------------------------------------------------------------------------------
+INPUT:
+  - Ask any question with documents uploaded
+EXPECTED OUTPUT:
+  [PASS] Sources section shows in the response (expandable)
+  [PASS] Each source shows: filename, format badge, relevance score, text snippet
+  [PASS] Sources are clickable or expandable
+  [PASS] Source scores are displayed (numeric or bar)
+
+--------------------------------------------------------------------------------
+TEST 18.2 — Confidence Bar
+--------------------------------------------------------------------------------
+INPUT:
+  - Ask a clear, document-supported question
+EXPECTED OUTPUT:
+  [PASS] Confidence bar appears in the message header
+  [PASS] Bar is filled proportionally (higher = more confident)
+  [PASS] Numeric confidence value is shown
+
+--------------------------------------------------------------------------------
+TEST 18.3 — Low Confidence Handling
+--------------------------------------------------------------------------------
+INPUT:
+  - Ask a question about a topic NOT in the uploaded documents
+EXPECTED OUTPUT:
+  [PASS] Confidence score is low (below threshold)
+  [PASS] Response may include a disclaimer about low confidence
+  [PASS] Sources may be irrelevant or few
+
+
+================================================================================
+SECTION 19: END-TO-END SCENARIO TESTS
+================================================================================
+
+--------------------------------------------------------------------------------
+TEST 19.1 — Complete Workflow: Upload → Ask → Rate → Export
+--------------------------------------------------------------------------------
+INPUT:
+  1. Upload python_fundamentals.txt
+  2. Wait for indexing to complete
+  3. Switch to Simple mode, ask "What is Python?"
+  4. Switch to Hard mode, ask "Explain Python classes"
+  5. Switch to Deep mode, enable all checkboxes, ask "Deep analysis of Python's standard library ecosystem"
+  6. Rate the Deep response 5 stars
+  7. Click a related question chip
+  8. Click "Export MD"
+  9. Click "Analytics"
+EXPECTED OUTPUT:
+  [PASS] Step 1-2: File uploads and indexes successfully
+  [PASS] Step 3: Concise answer with Simple badge
+  [PASS] Step 4: Detailed answer with Hard badge
+  [PASS] Step 5: Exhaustive answer with Deep badge, all pipeline steps shown
+  [PASS] Step 6: 5 stars highlight, feedback sent
+  [PASS] Step 7: Related question fills input, can be sent
+  [PASS] Step 8: Markdown file downloads with full conversation
+  [PASS] Step 9: Analytics shows 3+ queries, 1 feedback, mode distribution
+
+--------------------------------------------------------------------------------
+TEST 19.2 — Multi-Document Workflow
+--------------------------------------------------------------------------------
+INPUT:
+  1. Upload 3 different files (e.g., python.txt, data.csv, notes.md)
+  2. Ask a general question (no @ reference)
+  3. Ask a question with @python.txt reference
+  4. Delete one file via the X button
+  5. Ask the same general question again
+EXPECTED OUTPUT:
+  [PASS] Step 2: Answer pulls from all documents
+  [PASS] Step 3: Answer focuses on the referenced file
+  [PASS] Step 4: File removed, count decrements
+  [PASS] Step 5: Answer no longer includes content from deleted file
+
+
+================================================================================
+TEST SUMMARY CHECKLIST
+================================================================================
+Total Test Cases: 60+
+Sections: 19
+
+Quick Pass/Fail Tally:
+  [ ] Section 1:  UI Layout & Visual (5 tests)
+  [ ] Section 2:  File Upload & Management (10 tests)
+  [ ] Section 3:  Simple Mode QA (3 tests)
+  [ ] Section 4:  Hard Mode QA (3 tests)
+  [ ] Section 5:  Deep Mode QA (2 tests)
+  [ ] Section 6:  Search Modes (3 tests)
+  [ ] Section 7:  @ File Picker & Filtering (3 tests)
+  [ ] Section 8:  RAG Pipeline Features (7 tests)
+  [ ] Section 9:  Conversation Memory (3 tests)
+  [ ] Section 10: Streaming & SSE (2 tests)
+  [ ] Section 11: Feedback & Evaluation (3 tests)
+  [ ] Section 12: Inspector Panel (3 tests)
+  [ ] Section 13: Export & Modals (5 tests)
+  [ ] Section 14: API Endpoint Tests (14 tests)
+  [ ] Section 15: Edge Cases & Errors (7 tests)
+  [ ] Section 16: Input Box Specific (5 tests)
+  [ ] Section 17: Mode-Specific Behavior (3 tests)
+  [ ] Section 18: Source & Confidence (3 tests)
+  [ ] Section 19: End-to-End Scenarios (2 tests)
+
+TOTAL: 85 test cases across 19 sections
+
+================================================================================
